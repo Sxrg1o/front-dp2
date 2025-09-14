@@ -1,0 +1,216 @@
+/* Estilos para la página de detalle de plato */
+
+/* Contenedor principal */
+.plate-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Header de navegación */
+.plate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Layout de contenido */
+.plate-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .plate-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Detalles del plato */
+.plate-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Sección de imagen */
+.plate-image {
+  /* Imagen del plato */
+}
+
+/* Información básica */
+.plate-info {
+  /* Información del plato */
+}
+
+/* === OPCIONES DE PERSONALIZACIÓN === */
+.plate-options {
+  /* Opciones de personalización */
+}
+
+/* Selección de Proteína (Radio) */
+.protein-selection .protein-option {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.protein-selection .protein-option:hover {
+  border-color: #f97316;
+  background-color: #fff7ed;
+}
+
+.protein-selection .protein-option input[type="radio"] {
+  margin-right: 0.75rem;
+  accent-color: #f97316;
+}
+
+.protein-selection .protein-option input[type="radio"]:checked + .option-content {
+  color: #f97316;
+  font-weight: 600;
+}
+
+.protein-selection .protein-option:has(input:checked) {
+  border-color: #f97316;
+  background-color: #fff7ed;
+}
+
+/* Acompañamientos (Checkbox) */
+.sides-selection .side-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sides-selection .side-option:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.sides-selection .side-option input[type="checkbox"] {
+  margin-right: 0.5rem;
+  accent-color: #3b82f6;
+}
+
+.sides-selection .side-option input[type="checkbox"]:checked + .option-content {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.sides-selection .side-option:has(input:checked) {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+/* Ingredientes Extra (Checkbox) */
+.extras-selection .extra-option {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.extras-selection .extra-option:hover {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.extras-selection .extra-option input[type="checkbox"] {
+  margin-right: 0.75rem;
+  accent-color: #10b981;
+}
+
+.extras-selection .extra-option input[type="checkbox"]:checked + .option-content {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.extras-selection .extra-option:has(input:checked) {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+/* Nivel de Picante (Radio) */
+.spice-selection .spice-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.spice-selection .spice-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.spice-selection .spice-option:hover {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.spice-selection .spice-option input[type="radio"] {
+  margin-bottom: 0.5rem;
+  accent-color: #ef4444;
+}
+
+.spice-selection .spice-option input[type="radio"]:checked + .spice-label {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.spice-selection .spice-option:has(input:checked) {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.spice-selection .spice-label {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Contenido de opciones común */
+.option-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.option-name {
+  font-weight: 500;
+}
+
+.option-price {
+  font-size: 0.875rem;
+  color: #059669;
+  font-weight: 500;
+}
+
+/* Barra lateral */
+.plate-sidebar {
+  /* Barra lateral con precio y acciones */
+}
+
+/* Acciones del plato */
+.plate-actions {
+  /* Botones de acción */
+}

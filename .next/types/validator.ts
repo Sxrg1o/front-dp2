@@ -36,6 +36,42 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 }
 
 
+// Validate ../../src/app/(cliente)/carrito/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/(cliente)/carrito/page.js")
+  handler satisfies AppPageConfig<"/carrito">
+}
+
+// Validate ../../src/app/(cliente)/carta/[categoria]/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/(cliente)/carta/[categoria]/page.js")
+  handler satisfies AppPageConfig<"/carta/[categoria]">
+}
+
+// Validate ../../src/app/(cliente)/carta/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/(cliente)/carta/page.js")
+  handler satisfies AppPageConfig<"/carta">
+}
+
+// Validate ../../src/app/(cliente)/menu/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/(cliente)/menu/page.js")
+  handler satisfies AppPageConfig<"/menu">
+}
+
+// Validate ../../src/app/(cliente)/pago/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/(cliente)/pago/page.js")
+  handler satisfies AppPageConfig<"/pago">
+}
+
+// Validate ../../src/app/(cliente)/plato/[id]/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/(cliente)/plato/[id]/page.js")
+  handler satisfies AppPageConfig<"/plato/[id]">
+}
+
 // Validate ../../src/app/page.tsx
 {
   const handler = {} as typeof import("../../src/app/page.js")
