@@ -1,0 +1,4 @@
+{
+  "/(cliente)/plato/[id]/page": "app/(cliente)/plato/[id]/page.js",
+  "/page": "app/page.js"
+}

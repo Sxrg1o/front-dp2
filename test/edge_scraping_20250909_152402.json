@@ -1,0 +1,172 @@
+{
+  "sitio": "Pizza Hut Perú",
+  "url": "https://www.pizzahut.com.pe/",
+  "titulo": "Pedido en línea | Pizza Hut Peru",
+  "captcha_detectado": false,
+  "elementos_extraidos": [
+    {
+      "id": 1,
+      "texto": "(01)505-1111",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-12 css-15id6ww",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:01.835000"
+    },
+    {
+      "id": 2,
+      "texto": "BIENVENIDOS A PIZZA HUT\nIngrese su dirección para ver el menú local y las ofertas\nSu dirección\nBuscar\nUtilizar Mi Ubicación\nNuestras ofertas más populares\nNUEVO\nCOMBO PIZZA BURGER FAMILIAR\n¡Pizza para",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-12 css-15id6ww",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:01.962214"
+    },
+    {
+      "id": 3,
+      "texto": "BIENVENIDOS A PIZZA HUT\nIngrese su dirección para ver el menú local y las ofertas\nSu dirección\nBuscar\nUtilizar Mi Ubicación",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-xd8198",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.022904"
+    },
+    {
+      "id": 4,
+      "texto": "NUEVO\nCOMBO PIZZA BURGER FAMILIAR\n¡Pizza para compartir!\nPizza Burger Familiar y 1 Bebida de 1 litro para toda la mesa\nDesde\nS/. 49.90",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-14cudr4",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.081873"
+    },
+    {
+      "id": 5,
+      "texto": "NUEVO\nCHEESY BITES BURGER\n¡Pizza + hamburguesa con borde de queso!\nUn placer redondo, pide tu Cheesy Bites\nDesde\nS/. 49.90",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-14cudr4",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.139095"
+    },
+    {
+      "id": 6,
+      "texto": "NUEVO\nCOMBO DE TEMPORADA #2\n¡Comparte lo nuevo! 2 pizza grande, 6 pepperoni rolls y 8 hut churros\nDesde\nS/. 59.90",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-14cudr4",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.200048"
+    },
+    {
+      "id": 7,
+      "texto": "NUEVO\nDUPLA PIZZA BURGER MEDIANO\n¡Lo tiene TODO!\n2 Pizzas Burger Medianas, 1 bebida de 1 litro y alitas que encantan\nDesde\nS/. 55.90",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-14cudr4",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.260759"
+    },
+    {
+      "id": 8,
+      "texto": "NUEVO\nCOMBO PIZZA BURGER GRANDE\n¡El mejor combo!\nTu nueva pizza favorita en Cheddar, BBQ o Mix y 1 bebida de 1 litro.\nDesde\nS/. 39.90",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-14cudr4",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.320151"
+    },
+    {
+      "id": 9,
+      "texto": "MENÚ\nHut del Día\nCheesy Bites\nMega Promos\nPara Compartir\nPara Mi\nPizzas\nAntojitos\nBebidas\nPOLÍTICAS\nTérminos y condiciones online\nTérminos y Condiciones Campaña\nPolítica de Privacidad\nCondiciones de U",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-12 css-15id6ww",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.403159"
+    },
+    {
+      "id": 10,
+      "texto": "MENÚ\nHut del Día\nCheesy Bites\nMega Promos\nPara Compartir\nPara Mi\nPizzas\nAntojitos\nBebidas",
+      "tipo": "producto",
+      "tag": "div",
+      "clases": "MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-md-6 MuiGrid-grid-lg-6 MuiGrid-grid-xl-4 css-1ysdpiz",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.454260"
+    },
+    {
+      "id": 11,
+      "texto": "BIENVENIDOS A PIZZA HUT",
+      "tipo": "titulo",
+      "tag": "h1",
+      "clases": "MuiTypography-root MuiTypography-hero css-18zljgp",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.495952"
+    },
+    {
+      "id": 12,
+      "texto": "Nuestras ofertas más populares",
+      "tipo": "titulo",
+      "tag": "h2",
+      "clases": "MuiTypography-root MuiTypography-h2 css-1bjmeiw",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.536626"
+    },
+    {
+      "id": 13,
+      "texto": "COMBO PIZZA BURGER FAMILIAR",
+      "tipo": "titulo",
+      "tag": "h3",
+      "clases": "MuiTypography-root MuiTypography-h3 plpAnchor css-3r3qxd",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.576139"
+    },
+    {
+      "id": 14,
+      "texto": "CHEESY BITES BURGER",
+      "tipo": "titulo",
+      "tag": "h3",
+      "clases": "MuiTypography-root MuiTypography-h3 plpAnchor css-3r3qxd",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.620185"
+    },
+    {
+      "id": 15,
+      "texto": "COMBO DE TEMPORADA #2",
+      "tipo": "titulo",
+      "tag": "h3",
+      "clases": "MuiTypography-root MuiTypography-h3 plpAnchor css-3r3qxd",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.661223"
+    },
+    {
+      "id": 16,
+      "texto": "DUPLA PIZZA BURGER MEDIANO",
+      "tipo": "titulo",
+      "tag": "h3",
+      "clases": "MuiTypography-root MuiTypography-h3 plpAnchor css-3r3qxd",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.701785"
+    },
+    {
+      "id": 17,
+      "texto": "COMBO PIZZA BURGER GRANDE",
+      "tipo": "titulo",
+      "tag": "h3",
+      "clases": "MuiTypography-root MuiTypography-h3 plpAnchor css-3r3qxd",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.742650"
+    },
+    {
+      "id": 18,
+      "texto": "Ingrese su dirección para ver el menú local y las ofertas",
+      "tipo": "general",
+      "tag": "span",
+      "clases": "MuiTypography-root MuiTypography-subtitle1 css-1rknze4",
+      "sitio": "Pizza Hut Perú",
+      "extraido_en": "2025-09-09T15:24:02.785230"
+    }
+  ],
+  "total_elementos": 18,
+  "timestamp": "20250909_152402"
+}

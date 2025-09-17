@@ -1,0 +1,24 @@
+# Archivos .gitkeep para preservar estructura de carpetas
+
+# App Routes
+src/app/(cliente)/menu/.gitkeep
+src/app/(cliente)/plato/[id]/.gitkeep
+src/app/(cliente)/carrito/.gitkeep
+src/app/(cliente)/pago/.gitkeep
+src/app/(cocina)/dashboard/.gitkeep
+src/app/(mesero)/dashboard/.gitkeep
+src/app/api/health/.gitkeep
+
+# Components Features
+src/components/features/menu/.gitkeep
+src/components/features/cart/.gitkeep
+src/components/features/orders/.gitkeep
+src/components/features/kitchen/.gitkeep
+src/components/features/payments/.gitkeep
+src/components/features/notifications/.gitkeep
+
+# Core Folders
+src/stores/.gitkeep
+src/types/.gitkeep
+src/hooks/.gitkeep
+src/styles/.gitkeep
