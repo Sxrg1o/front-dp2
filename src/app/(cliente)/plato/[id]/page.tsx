@@ -1,281 +1,379 @@
+'use client'
+
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image' 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import './plate.css'
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Separator } from "@/components/ui/separator"
+import { Minus, Plus, ShoppingCart, ArrowLeft } from 'lucide-react'
 
-// Sample data - esto vendría de una API en producción
-const plateData = {
+// --- TIPOS DE DATOS ---
+type Option = {
+  id: string;
+  name: string;
+  price: number;
+};
+
+type OptionGroup = {
+  id: string;
+  title: string;
+  type: 'radio' | 'checkbox';
+  isRequired: boolean;
+  maxSelection?: number;
+  options: Option[];
+};
+
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  basePrice: number;
+  imageUrl: string; 
+  optionGroups: OptionGroup[];
+};
+
+// --- DATOS DE EJEMPLO (ESTO VENDRÍA DE  API) ---
+const productData: { [key: string]: Product } = {
   "1": {
     id: "1",
     name: "Ceviche Clásico",
-    description: "Pescado fresco marinado en limón con cebolla roja, ají limo, culantro y camote",
-    price: 28.50,
-    category: "Ceviches",
-    available: true,
-    isPopular: true,
-    preparationTime: 15,
-    rating: 4.8,
-    reviewCount: 156
+    description: "Pescado fresco marinado en limón con cebolla roja, ají limo, culantro y camote.",
+    basePrice: 28.50,
+    imageUrl: "/placeholder.svg",
+    optionGroups: [
+      {
+        id: "pescado",
+        title: "Elige tu pescado",
+        type: "radio",
+        isRequired: true,
+        options: [
+          { id: "lenguado", name: "Lenguado", price: 0 },
+          { id: "corvina", name: "Corvina", price: 3.00 },
+          { id: "mero", name: "Mero", price: 5.00 },
+        ],
+      },
+      {
+        id: "acompanamientos",
+        title: "Acompañamientos",
+        type: "checkbox",
+        isRequired: false,
+        options: [
+          { id: "camote-extra", name: "Camote extra", price: 2.00 },
+          { id: "choclo", name: "Choclo", price: 2.50 },
+          { id: "yuca", name: "Yuca frita", price: 2.00 },
+          { id: "cancha", name: "Cancha serrana", price: 1.50 },
+        ],
+      },
+      {
+        id: "extras",
+        title: "Ingredientes extra",
+        type: "checkbox",
+        isRequired: false,
+        maxSelection: 2,
+        options: [
+          { id: "pulpo", name: "Pulpo", price: 8.00 },
+          { id: "camarones", name: "Camarones", price: 10.00 },
+          { id: "conchas-negras", name: "Conchas negras", price: 12.00 },
+        ],
+      },
+      {
+        id: "aji",
+        title: "Nivel de ají",
+        type: "radio",
+        isRequired: true,
+        options: [
+          { id: "sin-aji", name: "Sin ají", price: 0 },
+          { id: "normal", name: "Normal", price: 0 },
+          { id: "fuerte", name: "Fuerte", price: 0 },
+        ],
+      },
+    ],
   },
   "2": {
     id: "2",
     name: "Ceviche Mixto",
-    description: "Pescado, pulpo y camarones marinados en limón con cebolla roja, ají limo y choclo",
-    price: 32.00,
-    category: "Ceviches",
-    available: true,
-    isPopular: true,
-    preparationTime: 18,
-    rating: 4.6,
-    reviewCount: 89
-  }
-}
+    description: "Pescado, pulpo y camarones marinados en limón con cebolla roja, ají limo y choclo.",
+    basePrice: 32.00,
+    imageUrl: "/placeholder.svg",
+    optionGroups: [
+      {
+        id: "aji",
+        title: "Nivel de ají",
+        type: "radio",
+        isRequired: true,
+        options: [
+          { id: "sin-aji", name: "Sin ají", price: 0 },
+          { id: "normal", name: "Normal", price: 0 },
+          { id: "fuerte", name: "Fuerte", price: 0 },
+        ],
+      },
+      {
+        id: "acompanamientos",
+        title: "Acompañamientos",
+        type: "checkbox",
+        isRequired: false,
+        options: [
+          { id: "camote-extra", name: "Camote extra", price: 2.00 },
+          { id: "choclo", name: "Choclo", price: 2.50 },
+          { id: "chifles", name: "Chifles (plátano frito)", price: 2.50 },
+        ],
+      },
+    ],
+  },
+};
 
-interface PlatePageProps {
-  params: Promise<{
-    id: string
-  }>
-}
+// --- COMPONENTE PRINCIPAL DE LA PÁGINA ---
+export default function ProductPage({ params }: { params: { id: string } }) {
+  const product = productData[params.id];
 
-export default async function PlatePage({ params }: PlatePageProps) {
-  const { id } = await params
-  const plate = plateData[id as keyof typeof plateData]
-
-  if (!plate) {
+  if (!product) {
     return (
-      <div className="plate-page">
-        <Card>
-          <CardContent className="p-8 text-center">
-            <h1 className="text-2xl font-bold text-muted-foreground mb-4">
-              Plato no encontrado
-            </h1>
-            <p className="text-muted-foreground mb-6">
-              El plato que buscas no está disponible en este momento.
-            </p>
-            <Link href="/">
-              <Button>Volver al Inicio</Button>
-            </Link>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle className="text-2xl">Producto no encontrado</CardTitle>
+            <CardDescription>
+              El producto que buscas no existe o no está disponible.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link href="/">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver al inicio
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
+  return <ProductCustomization product={product} />;
+}
+
+
+// --- COMPONENTE DE CLIENTE PARA LA INTERACTIVIDAD ---
+function ProductCustomization({ product }: { product: Product }) {
+  // --- ESTADO ---
+  const [quantity, setQuantity] = useState(1);
+  const [specialComments, setSpecialComments] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string | string[]>>({});
+
+  // --- LÓGICA DE CÁLCULO Y VALIDACIÓN  ---
+  const currencyFormatter = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  const totalPrice = useMemo(() => {
+    let optionsPrice = 0;
+    for (const groupId in selectedOptions) {
+      const group = product.optionGroups.find(g => g.id === groupId);
+      if (!group) continue;
+      const selection = selectedOptions[groupId];
+      if (Array.isArray(selection)) {
+        selection.forEach(optionId => {
+          const option = group.options.find(o => o.id === optionId);
+          if (option) optionsPrice += option.price;
+        });
+      } else {
+        const option = group.options.find(o => o.id === selection);
+        if (option) optionsPrice += option.price;
+      }
+    }
+    return (product.basePrice + optionsPrice) * quantity;
+  }, [selectedOptions, quantity, product]);
+
+  const validationError = useMemo(() => {
+    const missingRequirement = product.optionGroups.find(
+      (group) => group.isRequired && (!selectedOptions[group.id] || selectedOptions[group.id].length === 0)
+    );
+    if (missingRequirement) {
+      return `Por favor, elige una opción para "${missingRequirement.title}"`;
+    }
+    return null;
+  }, [selectedOptions, product.optionGroups]);
+
+  // --- MANEJADORES DE EVENTOS  ---
+  const handleRadioChange = (groupId: string, value: string) => {
+    setSelectedOptions(prev => ({ ...prev, [groupId]: value }));
+  };
+  const handleCheckboxChange = (groupId: string, optionId: string, checked: boolean) => {
+    const group = product.optionGroups.find(g => g.id === groupId)!;
+    const currentSelection = (selectedOptions[groupId] as string[] || []);
+    let newSelection: string[];
+    if (checked) {
+      if (group.maxSelection && currentSelection.length >= group.maxSelection) { return; }
+      newSelection = [...currentSelection, optionId];
+    } else {
+      newSelection = currentSelection.filter(id => id !== optionId);
+    }
+    setSelectedOptions(prev => ({ ...prev, [groupId]: newSelection }));
+  };
+  const handleQuantityChange = (amount: number) => {
+    setQuantity(prev => Math.max(1, prev + amount));
+  };
+  const handleAddToCart = () => {
+    if (validationError) return;
+    console.log("Agregando al carrito:", { productId: product.id, quantity, selectedOptions, specialComments, totalPrice, });
+    alert(`${product.name} x${quantity} agregado al carrito!`);
+  }
+
+  // --- RENDERIZADO DEL COMPONENTE ---
   return (
-    <div className="plate-page">
-      {/* Header con navegación */}
-      <header className="plate-header">
-        <Link href="/" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Volver al Inicio
-        </Link>
-        
-        <Badge variant={plate.available ? "secondary" : "destructive"}>
-          {plate.available ? "Disponible" : "Agotado"}
-        </Badge>
-      </header>
+    <div className="bg-gradient-to-br from-cyan-400 to-blue-500 min-h-screen p-4 md:p-8 flex items-center justify-center">
+      <div className="max-w-4xl w-full">
+        <header className="mb-4">
+          <Link href="/" className="inline-flex items-center text-white/80 hover:text-white transition-colors">
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            <span className="font-medium">Volver al Menú</span>
+          </Link>
+        </header>
 
-      {/* Contenido principal */}
-      <div className="plate-content">
-        {/* Columna principal - Detalles */}
-        <div className="plate-details">
-          
-          {/* Imagen del plato */}
-          <section className="plate-image">
-            <Card>
-              <CardContent className="p-4">
-                <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">[IMAGEN DEL CEVICHE]</span>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
+        <main className="glass-effect rounded-2xl shadow-2xl shadow-black/20 overflow-hidden text-slate-800">
+          <div className="p-6 sm:p-8">
 
-          {/* Información básica */}
-          <section className="plate-info">
-            <Card>
-              <CardHeader>
-                <CardTitle>{plate.name}</CardTitle>
-                <CardDescription>{plate.description}</CardDescription>
+            {/* INFORMACIÓN DEL PRODUCTO */}
+            <section className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+              <div className="w-32 h-32 flex-shrink-0 relative rounded-lg overflow-hidden shadow-lg border-4 border-white/50">
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+              <div className="flex-grow text-center sm:text-left">
+                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">{product.name}</h1>
+                <p className="text-slate-600 mt-2">{product.description}</p>
+                <p className="text-2xl font-bold text-slate-800 mt-3">{currencyFormatter.format(product.basePrice)}</p>
+              </div>
+            </section>
+
+            {/* OPCIONES DEL PRODUCTO */}
+            <div className="space-y-6">
+              {product.optionGroups.map((group) => (
+                <Card key={group.id} className="bg-white/60 border-slate-200/50 shadow-sm">
+                  <CardHeader className="bg-white/50">
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-lg font-semibold text-slate-800">{group.title}</CardTitle>
+                      <Badge className={group.isRequired ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}>
+                        {group.isRequired ? "Obligatorio" : "Opcional"}
+                      </Badge>
+                    </div>
+                    {group.type !== 'radio' && group.maxSelection && (
+                      <CardDescription>
+                        Selecciona hasta {group.maxSelection} {group.maxSelection > 1 ? 'opciones' : 'opción'}
+                      </CardDescription>
+                    )}
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    {group.type === 'radio' ? (
+                      <RadioGroup onValueChange={(value) => handleRadioChange(group.id, value)}>
+                        <div className="space-y-2">
+                          {group.options.map(option => (
+                            <div key={option.id} className="flex items-center justify-between p-3 rounded-md transition-colors hover:bg-cyan-100/50">
+                              <div className="flex items-center">
+                                <RadioGroupItem value={option.id} id={`${group.id}-${option.id}`} />
+                                <Label htmlFor={`${group.id}-${option.id}`} className="pl-3 font-medium cursor-pointer text-base text-slate-700">
+                                  {option.name}
+                                </Label>
+                              </div>
+                              <span className="text-sm font-semibold text-slate-500">
+                                {option.price > 0 ? `+${currencyFormatter.format(option.price)}` : ''}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    ) : (
+                      <div className="space-y-2">
+                        {group.options.map(option => (
+                          <div key={option.id} className="flex items-center justify-between p-3 rounded-md transition-colors hover:bg-cyan-100/50">
+                            <div className="flex items-center">
+                              <Checkbox
+                                id={`${group.id}-${option.id}`}
+                                onCheckedChange={(checked) => handleCheckboxChange(group.id, option.id, !!checked)}
+                                disabled={
+                                  !(selectedOptions[group.id] as string[] || []).includes(option.id) &&
+                                  (selectedOptions[group.id] as string[] || []).length >= (group.maxSelection || Infinity)
+                                }
+                              />
+                              <Label htmlFor={`${group.id}-${option.id}`} className="pl-3 font-medium cursor-pointer text-base text-slate-700">
+                                {option.name}
+                              </Label>
+                            </div>
+                            <span className="text-sm font-semibold text-slate-500">
+                              {option.price > 0 ? `+${currencyFormatter.format(option.price)}` : ''}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            {/* Comentarios especiales */}
+            <Card className="mt-8 bg-white/60 border-slate-200/50 shadow-sm">
+              <CardHeader className="bg-white/50">
+                <CardTitle className="text-lg font-semibold text-slate-800">Comentarios especiales</CardTitle>
+                <CardDescription>Indícanos cualquier detalle adicional para tu plato.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Ingredientes:</h4>
-                    <p className="text-muted-foreground">[Pescado fresco, limón, cebolla roja, ají limo, culantro]</p>
-                  </div>
-                </div>
+              <CardContent className="pt-4">
+                <Textarea
+                  placeholder="Ej: Sin culantro, con más limón, etc..."
+                  value={specialComments}
+                  onChange={(e) => setSpecialComments(e.target.value)}
+                  className="bg-white/80 focus:bg-white"
+                />
               </CardContent>
             </Card>
-          </section>
 
-          {/* Opciones de personalización */}
-          <section className="plate-options">
-            <Card>
-              <CardHeader>
-                <CardTitle>Personaliza tu pedido</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {/* Selección de Proteína (Radio) */}
-                  <div className="protein-selection">
-                    <h4 className="font-semibold mb-3">Elige tu pescado:</h4>
-                    <div className="space-y-2">
-                      <label className="protein-option">
-                        <input type="radio" name="protein" value="lenguado" defaultChecked />
-                        <span className="option-content">
-                          <span className="option-name">Lenguado</span>
-                          <span className="option-price">Base</span>
-                        </span>
-                      </label>
-                      <label className="protein-option">
-                        <input type="radio" name="protein" value="corvina" />
-                        <span className="option-content">
-                          <span className="option-name">Corvina</span>
-                          <span className="option-price">+S/. 3.00</span>
-                        </span>
-                      </label>
-                      <label className="protein-option">
-                        <input type="radio" name="protein" value="mero" />
-                        <span className="option-content">
-                          <span className="option-name">Mero</span>
-                          <span className="option-price">+S/. 5.00</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Acompañamientos (Checkbox) */}
-                  <div className="sides-selection">
-                    <h4 className="font-semibold mb-3">Acompañamientos:</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Camote</span>
-                          <span className="option-price">+S/. 2.00</span>
-                        </span>
-                      </label>
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Choclo</span>
-                          <span className="option-price">+S/. 2.50</span>
-                        </span>
-                      </label>
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Yuca</span>
-                          <span className="option-price">+S/. 2.00</span>
-                        </span>
-                      </label>
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Cancha</span>
-                          <span className="option-price">+S/. 1.50</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Ingredientes Extra (Checkbox) */}
-                  <div className="extras-selection">
-                    <h4 className="font-semibold mb-3">Ingredientes extra:</h4>
-                    <div className="space-y-2">
-                      <label className="extra-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Pulpo</span>
-                          <span className="option-price">+S/. 8.00</span>
-                        </span>
-                      </label>
-                      <label className="extra-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Camarones</span>
-                          <span className="option-price">+S/. 10.00</span>
-                        </span>
-                      </label>
-                      <label className="extra-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Conchas negras</span>
-                          <span className="option-price">+S/. 12.00</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Nivel de Ají (Radio) */}
-                  <div className="spice-selection">
-                    <h4 className="font-semibold mb-3">Nivel de ají:</h4>
-                    <div className="spice-options">
-                      <label className="spice-option">
-                        <input type="radio" name="spice" value="sin-aji" defaultChecked />
-                        <span className="spice-label">Sin ají</span>
-                      </label>
-                      <label className="spice-option">
-                        <input type="radio" name="spice" value="normal" />
-                        <span className="spice-label">Normal</span>
-                      </label>
-                      <label className="spice-option">
-                        <input type="radio" name="spice" value="fuerte" />
-                        <span className="spice-label">Fuerte</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        </div>
-
-        {/* Barra lateral - Precio y acciones */}
-        <aside className="plate-sidebar">
-          <Card className="sticky top-6">
-            <CardHeader>
-              <CardTitle className="text-xl">{plate.name}</CardTitle>
-              <CardDescription>{plate.category}</CardDescription>
-            </CardHeader>
-            <CardContent className="plate-actions space-y-4">
-              {/* Precio */}
+            <Separator className="my-8 bg-white/30" />
+            {/* cantidad */}
+            <footer className="space-y-6">
               <div className="flex justify-between items-center">
-                <span className="text-3xl font-bold text-green-600">
-                  S/. {plate.price.toFixed(2)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {plate.preparationTime} min
-                </span>
+                <span className="font-bold text-xl text-slate-800">Cantidad</span>
+                <div className="flex items-center gap-1 bg-white/70 rounded-full p-1 shadow-inner">
+                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
+                    <Minus className="w-5 h-5" />
+                  </Button>
+                  <span className="w-10 text-center font-bold text-xl text-slate-900">{quantity}</span>
+                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => handleQuantityChange(1)}>
+                    <Plus className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
 
-              {/* Badges */}
-              <div className="flex flex-wrap gap-2">
-                {plate.isPopular && (
-                  <Badge className="bg-orange-500">Popular</Badge>
-                )}
-              </div>
-
-              {/* Botones */}
-              <Button 
-                className="w-full" 
+              {validationError && (
+                <p className="text-sm text-white bg-red-500/90 p-3 rounded-lg text-center font-semibold shadow">
+                  {validationError}
+                </p>
+              )}
+              {/* Botón de agregar al carrito */}
+              <Button
                 size="lg"
-                disabled={!plate.available}
+                className="w-full text-lg font-bold h-14 bg-cyan-500 text-white hover:bg-cyan-600 shadow-lg hover:shadow-cyan-500/40 transform hover:-translate-y-0.5 transition-all duration-300"
+                disabled={!!validationError}
+                onClick={handleAddToCart}
               >
-                {plate.available ? "Agregar al Carrito" : "No Disponible"}
+                <ShoppingCart className="w-6 h-6 mr-3" />
+                Agregar ({currencyFormatter.format(totalPrice)})
               </Button>
-
-              <Button variant="outline" className="w-full" disabled>
-                Ver Carrito (No disponible)
-              </Button>
-            </CardContent>
-          </Card>
-        </aside>
+            </footer>
+          </div>
+        </main>
       </div>
     </div>
-  )
+  );
 }
