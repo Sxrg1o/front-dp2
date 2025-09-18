@@ -1,18 +1,43 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Fish, Eye, EyeOff, Lightbulb, Mail, Lock, Loader2 } from "lucide-react"
 
 export default function LoginForm() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Login attempt:", { email, password })
+    setIsLoading(true)
+    setError("")
+
+    // Validar credenciales admin@dp2.com/admin
+    if (email === "admin@dp2.com" && password === "admin") {
+      setTimeout(() => {
+        localStorage.setItem("isAuthenticated", "true")
+        localStorage.setItem("user", JSON.stringify({ 
+          email: "admin@dp2.com", 
+          role: "admin",
+          name: "Administrador DP2"
+        }))
+        router.push("/home")
+        setIsLoading(false)
+      }, 1000)
+    } else {
+      setTimeout(() => {
+        setError("Credenciales incorrectas. Use admin@dp2.com / admin")
+        setIsLoading(false)
+      }, 1000)
+    }
   }
 
   return (
@@ -21,7 +46,7 @@ export default function LoginForm() {
         <CardHeader className="text-center space-y-4 pb-6">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white text-lg">🐟</span>
+              <Fish className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">DP2</h1>
@@ -37,15 +62,23 @@ export default function LoginForm() {
         </CardHeader>
 
         <CardContent className="space-y-6 p-6">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full bg-red-500 flex-shrink-0"></div>
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Correo electrónico
+              <label htmlFor="email" className="text-sm font-medium text-gray-700 flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>Correo electrónico</span>
               </label>
               <Input
                 id="email"
                 type="email"
-                placeholder="tu@email.com"
+                placeholder="admin@dp2.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
@@ -54,14 +87,15 @@ export default function LoginForm() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Contraseña
+              <label htmlFor="password" className="text-sm font-medium text-gray-700 flex items-center space-x-2">
+                <Lock className="w-4 h-4" />
+                <span>Contraseña</span>
               </label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder="admin"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12 bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 pr-10"
@@ -72,9 +106,20 @@ export default function LoginForm() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+            </div>
+
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="text-sm text-blue-700 flex items-start space-x-2">
+                <Lightbulb className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  <strong>Credenciales de prueba:</strong><br/>
+                  Email: <code className="bg-white px-1 rounded">admin@dp2.com</code><br/>
+                  Contraseña: <code className="bg-white px-1 rounded">admin</code>
+                </span>
+              </p>
             </div>
 
             <div className="flex items-center justify-between text-sm">
@@ -92,9 +137,17 @@ export default function LoginForm() {
 
             <Button
               type="submit"
+              disabled={isLoading}
               className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
             >
-              Iniciar Sesión
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Iniciando sesión...</span>
+                </div>
+              ) : (
+                'Iniciar Sesión'
+              )}
             </Button>
           </form>
 
@@ -125,10 +178,7 @@ export default function LoginForm() {
           </div>
 
           <div className="text-center text-sm text-gray-500">
-            ¿No tienes una cuenta?{" "}
-            <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">
-              Regístrate aquí
-            </a>
+            Sistema de gestión para Cevichería DP2
           </div>
         </CardContent>
       </Card>
