@@ -58,12 +58,7 @@ npm run type-check
 
 - 📋 **Gestión de Órdenes** - Control completo de pedidos
 - 🍽️ **Menú Digital** - Administración de categorías e items
-- 💰 **Punto de Venta** - Sistema POS integrado
-- 👨‍🍳 **Display de Cocina** - Pantalla para preparación
-- 📦 **Inventario** - Control de stock y proveedores
-- 📊 **Analíticas** - Reportes y métricas del negocio
-- 👥 **Gestión de Personal** - Roles y horarios
-- 🏪 **Gestión de Mesas** - Layout y reservas
+
 
 ## Historial
 - **31/08/2025**: Instalación inicial con Next.js, React y Tailwind CSS
