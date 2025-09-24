@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, Facebook, Instagram, ChevronDown } from "lucide-react"
 
 interface SideOption {
   id: string
@@ -92,28 +92,32 @@ export default function ProductCustomization() {
   return (
     <div className="min-h-screen bg-[#FAFCFE]">
       {/* Header */}
-      <header className="bg-white border-b border-[#ECF1F4] sticky top-0 z-50">
+      <header className="bg-[#0056C6] sticky top-0 z-50">
         <div className="max-w-[1110px] mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <span className="text-sm text-[#8C8CA1]">Personalizar producto</span>
-            </div>
+          <div className="flex items-center justify-center h-16">
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-sm font-medium hover:text-[#0056C6]">
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Menú
               </a>
-              <a href="#" className="text-sm font-medium hover:text-[#0056C6]">
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Nosotros
               </a>
-              <a href="#" className="text-sm font-medium hover:text-[#0056C6]">
+              <div className="mx-8">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-[#0056C6] rounded-full flex items-center justify-center">
+                    <div className="w-4 h-4 bg-white rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Mi Orden
               </a>
-              <a href="#" className="text-sm font-medium hover:text-[#0056C6]">
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Contáctanos
               </a>
             </nav>
             <div className="md:hidden">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-white hover:text-[#5CEFFA]">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -240,7 +244,7 @@ export default function ProductCustomization() {
 
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-gray-600">{product.description}</p>
-                  <p className="text-base font-semibold text-gray-900">{formatPrice(product.price)}</p>
+                  <p className="text-base font-semibold text-gray-900">{formatPrice(basePrice)}</p>
                 </div>
 
                 {/* Quantity Control */}
@@ -293,6 +297,118 @@ export default function ProductCustomization() {
           </div>
         </div>
       </div>
+
+      {/* Footer Section */}
+      <footer className="bg-[#0056C6] text-white">
+        <div className="max-w-[1110px] mx-auto px-4 py-12">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-[#0056C6] rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 bg-white rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center justify-center space-x-12 mb-8">
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Menú
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Eventos
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Atención al cliente
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Métodos de Pago
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Políticas y Términos
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Contáctanos
+            </a>
+          </nav>
+
+          {/* Mobile Navigation */}
+          <div className="md:hidden space-y-4 mb-8">
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Menú</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Eventos</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Atención al cliente</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Métodos de Pago</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Políticas y Términos</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Contáctanos</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Tagline */}
+          <div className="text-center mb-8">
+            <p className="text-sm text-white/80">Sabores Auténticos, Momentos Inolvidables.</p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
+              Ordene Ahora
+            </Button>
+            <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
+              Reserve Ahora
+            </Button>
+          </div>
+
+          {/* Social Media */}
+          <div className="flex justify-center space-x-6 mb-4">
+            <a
+              href="#"
+              className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <Facebook className="w-5 h-5" />
+            </a>
+            <a
+              href="#"
+              className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
+
+          {/* Social Media Text */}
+          <div className="text-center">
+            <p className="text-xs text-white/60">Síguenos En Nuestras Redes Sociales</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
