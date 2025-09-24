@@ -244,7 +244,7 @@ export default function ProductCustomization() {
 
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-gray-600">{product.description}</p>
-                  <p className="text-base font-semibold text-gray-900">{formatPrice(basePrice)}</p>
+                  <p className="text-base font-semibold text-gray-900">{formatPrice(product.price)}</p>
                 </div>
 
                 {/* Quantity Control */}
