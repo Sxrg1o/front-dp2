@@ -21,7 +21,12 @@ import {
   ShoppingCart,
   Search,
   Menu,
-  Heart
+  Heart,
+  ChevronDown,
+  ChevronUp,
+  Facebook,
+  Instagram,
+  ArrowLeft
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -30,7 +35,7 @@ interface ApiMenuItem {
   name: string
   price: string
   description: string
-  image: string // Agregar este campo
+  image: string
 }
 
 // Tipo para nuestro menú local
@@ -56,7 +61,7 @@ const localMenuItems: MenuItem[] = [
     rating: 4.9,
     prepTime: "15 min",
     image: "/fresh-ceviche-with-red-onions-and-sweet-potato.jpg",
-    category: "Ceviches",
+    category: "Entradas",
     popular: true
   },
   {
@@ -67,7 +72,7 @@ const localMenuItems: MenuItem[] = [
     rating: 4.8,
     prepTime: "18 min",
     image: "/mixed-seafood-ceviche-with-shrimp-and-octopus.jpg",
-    category: "Ceviches",
+    category: "Entradas",
     popular: true
   },
   {
@@ -78,7 +83,7 @@ const localMenuItems: MenuItem[] = [
     rating: 4.7,
     prepTime: "12 min",
     image: "/tiradito-nikkei-with-thin-fish-slices-and-sesame.jpg",
-    category: "Tiraditos",
+    category: "Entradas",
     popular: false
   },
   {
@@ -89,7 +94,7 @@ const localMenuItems: MenuItem[] = [
     rating: 4.6,
     prepTime: "25 min",
     image: "/peruvian-seafood-rice-with-cilantro.jpg",
-    category: "Arroces",
+    category: "Criollo",
     popular: false
   },
   {
@@ -113,10 +118,76 @@ const localMenuItems: MenuItem[] = [
     image: "/leche-de-tigre-with-seafood-and-corn-nuts.jpg",
     category: "Bebidas",
     popular: true
+  },
+  {
+    id: 7,
+    name: "Arroz chaufa de mariscos",
+    description: "Arroz frito con mariscos frescos y vegetales",
+    price: 30.00,
+    rating: 4.7,
+    prepTime: "20 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 8,
+    name: "Chaufa de langostinos",
+    description: "Arroz frito con langostinos y vegetales",
+    price: 38.00,
+    rating: 4.8,
+    prepTime: "18 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 9,
+    name: "Chaufa de pescado",
+    description: "Arroz frito con pescado fresco y vegetales",
+    price: 32.00,
+    rating: 4.6,
+    prepTime: "20 min",
+    image: "/placeholder.jpg",
+    category: "Pescados",
+    popular: false
+  },
+  {
+    id: 10,
+    name: "Arroz con conchas negras",
+    description: "Arroz con conchas negras frescas y culantro",
+    price: 40.00,
+    rating: 4.9,
+    prepTime: "25 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: true
+  },
+  {
+    id: 11,
+    name: "Arroz con pulpo",
+    description: "Arroz con pulpo fresco y vegetales",
+    price: 35.00,
+    rating: 4.7,
+    prepTime: "22 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 12,
+    name: "Aeropuerto marino",
+    description: "Combinación de arroz con mariscos variados",
+    price: 42.00,
+    rating: 4.8,
+    prepTime: "30 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: true
   }
 ]
 
-const categories = ["Todos", "Ceviches", "Tiraditos", "Arroces", "Entradas", "Bebidas"]
+const categories = ["Todos", "Criollo", "Pescados", "Bebidas", "Entradas"]
 
 export default function HomePage() {
   const router = useRouter()
@@ -130,6 +201,12 @@ export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [cart, setCart] = useState<number[]>([])
   const [favorites, setFavorites] = useState<number[]>([])
+  const [expandedCategories, setExpandedCategories] = useState<{[key: string]: boolean}>({
+    "Entradas": true,
+    "Criollo": true,
+    "Pescados": true,
+    "Bebidas": true
+  })
 
   useEffect(() => {
     // Verificar autenticación
@@ -202,7 +279,7 @@ export default function HomePage() {
         rating: 4.5 + Math.random() * 0.5, // Rating aleatorio entre 4.5-5.0
         prepTime: "15-20 min",
         image: image, // Usar la imagen de la API
-        category: localMenuItems[index % localMenuItems.length]?.category || "Ceviches",
+        category: localMenuItems[index % localMenuItems.length]?.category || "Entradas",
         popular: Math.random() > 0.7 // 30% chance de ser popular
       }
     })
@@ -290,6 +367,13 @@ export default function HomePage() {
     setFavorites((prev) => (prev.includes(dishId) ? prev.filter((id) => id !== dishId) : [...prev, dishId]))
   }
 
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }))
+  }
+
   const filteredDishes = menuItems.filter((dish) => {
     const matchesCategory = selectedCategory === "Todos" || dish.category === selectedCategory
     const matchesSearch =
@@ -298,14 +382,14 @@ export default function HomePage() {
     return matchesCategory && matchesSearch
   })
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        className={`w-4 h-4 ${i < Math.floor(rating) ? "text-yellow-400 fill-current" : "text-gray-300"}`}
-      />
-    ))
-  }
+  // Agrupar platos por categoría
+  const dishesByCategory = filteredDishes.reduce((acc, dish) => {
+    if (!acc[dish.category]) {
+      acc[dish.category] = []
+    }
+    acc[dish.category].push(dish)
+    return acc
+  }, {} as {[key: string]: MenuItem[]})
 
   if (!isAuthenticated) {
     return (
@@ -347,21 +431,11 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+      <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-xl flex items-center justify-center">
-                <Shrimp className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-cyan-600">Cevichería DP2</h1>
-                <p className="text-sm text-muted-foreground">Los mejores sabores del mar peruano</p>
-              </div>
-            </div>
-
             <div className="flex items-center space-x-4">
               <Button 
                 onClick={handleViewMenu}
@@ -380,6 +454,9 @@ export default function HomePage() {
                   </>
                 )}
               </Button>
+            </div>
+
+            <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />
               </Button>
@@ -391,226 +468,139 @@ export default function HomePage() {
                   </Badge>
                 )}
               </Button>
+              {/* User Badge */}
+              <div className="bg-gray-200 px-3 py-1 rounded-lg flex items-center space-x-2">
+                <ArrowLeft className="w-4 h-4 text-gray-600" />
+                <span className="text-sm font-medium text-gray-800">JOSEPH ARTURO GUTIERREZ ALAYO</span>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-cyan-500 to-teal-600 text-white">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-balance">
-            Los Mejores Ceviches
-            <span className="block text-yellow-300">del Perú</span>
-          </h2>
-          <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto text-pretty">
-            Ingredientes frescos del océano, preparados con la tradición y pasión de la cocina peruana
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-cyan-600 hover:bg-cyan-50">
-              Ver Carta Completa
-            </Button>
-            <Button size="lg" variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-              <Phone className="w-4 h-4 mr-2" />
-              Hacer Pedido
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Nuestro Menú</h1>
 
-      {/* API Status */}
-      {isApiData && lastUpdate && (
-        <div className="bg-green-50 border-l-4 border-green-400 p-4">
-          <div className="flex items-center">
-            <CheckCircle className="w-5 h-5 text-green-400 mr-2" />
-            <p className="text-sm text-green-700">
-              Datos de API actualizados: {lastUpdate.toLocaleTimeString()} 
-              ({menuItems.length} items)
-            </p>
-          </div>
-        </div>
-      )}
-      
-      {!isApiData && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-          <div className="flex items-center">
-            <Info className="w-5 h-5 text-yellow-400 mr-2" />
-            <p className="text-sm text-yellow-700">
-              Mostrando menú local de cevichería. Haz click en "Actualizar Menú" para obtener datos externos.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Search and Filters */}
-      <section className="py-8 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Buscar platos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <div className="flex gap-2 flex-wrap">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                  className={selectedCategory === category ? "bg-cyan-600" : ""}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Menu Grid */}
-      <section className="py-12 px-4">
-        <div className="container mx-auto">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
-              {isApiData ? 'Menú desde API' : 'Nuestra Carta'}
-            </h2>
-            <p className="text-gray-600">
-              {isApiData ? 'Datos sincronizados desde sistema externo' : 'Los mejores sabores del mar peruano'}
-            </p>
+        {/* Search and Filters */}
+        <div className="mb-8">
+          <div className="relative mb-4">
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Input
+              placeholder="Buscar platos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-12 text-lg"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDishes.map((dish) => (
-              <Card key={dish.id} className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 rounded-2xl overflow-hidden group">
-                <div className="relative">
-                  <img
-                    src={dish.image || "/placeholder.svg"}
-                    alt={dish.name}
-                    className="w-full h-48 object-cover cursor-pointer"
-                    onError={(e) => {
-                      // Si la imagen falla, usar una imagen local
-                      const target = e.target as HTMLImageElement
-                      target.src = localMenuItems[dish.id % localMenuItems.length]?.image || "/placeholder.jpg"
-                    }}
-                  />
-                  {dish.popular && (
-                    <Badge className="absolute top-3 left-3 bg-yellow-500 text-white">Popular</Badge>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-3 right-3 bg-white/90 hover:bg-white"
-                    onClick={() => toggleFavorite(dish.id)}
-                  >
-                    <Heart
-                      className={`h-4 w-4 ${favorites.includes(dish.id) ? "fill-red-500 text-red-500" : "text-gray-600"}`}
-                    />
-                  </Button>
-                </div>
-
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg group-hover:text-cyan-600 transition-colors cursor-pointer">
-                        {dish.name}
-                      </CardTitle>
-                      <Badge variant="outline" className="mt-1 text-xs">
-                        {dish.category}
-                      </Badge>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-cyan-600">
-                        {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
-                      </p>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="pt-0">
-                  <CardDescription className="text-sm mb-4 text-pretty">{dish.description}</CardDescription>
-
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span>{dish.rating.toFixed(1)}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      <span>{dish.prepTime}</span>
-                    </div>
-                  </div>
-                </CardContent>
-
-                <CardFooter className="pt-0">
-                  <Button 
-                    className={`w-full text-white font-semibold py-2 rounded-xl flex items-center justify-center space-x-2 ${
-                      isApiData ? 'bg-green-600 hover:bg-green-700' : 'bg-cyan-600 hover:bg-cyan-700'
-                    }`}
-                    onClick={() => addToCart(dish.id)}
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                    <span>Agregar al Carrito</span>
-                  </Button>
-                </CardFooter>
-              </Card>
+          <div className="flex gap-2 flex-wrap justify-center">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category)}
+                className={`rounded-full px-4 py-2 ${
+                  selectedCategory === category 
+                    ? "bg-cyan-600 text-white" 
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                {category}
+              </Button>
             ))}
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300"
+            >
+              ...
+            </Button>
           </div>
         </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-cyan-600 mb-2">500+</div>
-              <p className="text-muted-foreground">Clientes Satisfechos</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-cyan-600 mb-2">4.9</div>
-              <p className="text-muted-foreground">Calificación Promedio</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-cyan-600 mb-2">15min</div>
-              <p className="text-muted-foreground">Tiempo Promedio</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-cyan-600 text-white py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Cevichería DP2</h3>
-              <p className="text-white/80">
-                La mejor experiencia gastronómica peruana, con ingredientes frescos y sabores auténticos.
+        {/* API Status */}
+        {isApiData && lastUpdate && (
+          <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
+            <div className="flex items-center">
+              <CheckCircle className="w-5 h-5 text-green-400 mr-2" />
+              <p className="text-sm text-green-700">
+                Datos de API actualizados: {lastUpdate.toLocaleTimeString()} 
+                ({menuItems.length} items)
               </p>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Contacto</h4>
-              <p className="text-white/80 mb-2">📍 Av. Larco 123, Miraflores</p>
-              <p className="text-white/80 mb-2"> +51 1 234-5678</p>
-              <p className="text-white/80">✉️ info@cevicheriadp2.pe</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Horarios</h4>
-              <p className="text-white/80 mb-2">Lun - Dom: 11:00 AM - 10:00 PM</p>
-              <p className="text-white/80">Delivery hasta las 9:30 PM</p>
+          </div>
+        )}
+        
+        {!isApiData && (
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+            <div className="flex items-center">
+              <Info className="w-5 h-5 text-yellow-400 mr-2" />
+              <p className="text-sm text-yellow-700">
+                Mostrando menú local de cevichería. Haz click en "Actualizar Menú" para obtener datos externos.
+              </p>
             </div>
           </div>
-          <div className="border-t border-white/20 mt-8 pt-8 text-center">
-            <p className="text-white/60">© 2024 Cevichería DP2. Todos los derechos reservados.</p>
+        )}
+
+        {/* Menu Sections */}
+        {Object.entries(dishesByCategory).map(([category, dishes]) => (
+          <div key={category} className="mb-8">
+            {/* Category Section */}
+            <div className="bg-gray-200 rounded-lg p-6">
+              {/* Category Header */}
+              <div 
+                className="flex items-center justify-between cursor-pointer mb-4"
+                onClick={() => toggleCategory(category)}
+              >
+                <h2 className="text-xl font-bold text-gray-800">{category}</h2>
+                {expandedCategories[category] ? (
+                  <ChevronUp className="w-5 h-5 text-gray-600" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-600" />
+                )}
+              </div>
+
+              {/* Dishes Grid */}
+              {expandedCategories[category] && (
+                <div className="grid grid-cols-4 gap-4">
+                  {dishes.map((dish) => (
+                    <div key={dish.id} className="text-center">
+                      {/* Image Placeholder */}
+                      <div className="relative mb-2">
+                        <img
+                          src={dish.image || "/placeholder.svg"}
+                          alt={dish.name}
+                          className="w-full h-24 object-cover rounded-lg bg-gray-300"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src = "/placeholder.jpg"
+                          }}
+                        />
+                        {dish.popular && (
+                          <Badge className="absolute top-1 left-1 bg-yellow-500 text-white text-xs">Popular</Badge>
+                        )}
+                      </div>
+                      
+                      {/* Dish Name */}
+                      <div className="bg-cyan-600 text-white px-2 py-1 rounded text-sm font-medium">
+                        {dish.name}
+                      </div>
+                      
+                      {/* Price */}
+                      <div className="mt-1 text-sm font-bold text-gray-800">
+                        {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </footer>
+        ))}
+      </main>
     </div>
   )
 }

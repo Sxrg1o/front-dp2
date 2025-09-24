@@ -1,5 +1,4 @@
 {
-  "/api/menu/pizzas/route": "app/api/menu/pizzas/route.js",
   "/page": "app/page.js",
   "/home/page": "app/home/page.js",
   "/(cliente)/plato/[id]/page": "app/(cliente)/plato/[id]/page.js"
