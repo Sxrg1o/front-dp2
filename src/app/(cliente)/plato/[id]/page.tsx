@@ -1,281 +1,414 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import './plate.css'
+"use client"
 
-// Sample data - esto vendría de una API en producción
-const plateData = {
-  "1": {
-    id: "1",
-    name: "Ceviche Clásico",
-    description: "Pescado fresco marinado en limón con cebolla roja, ají limo, culantro y camote",
-    price: 28.50,
-    category: "Ceviches",
-    available: true,
-    isPopular: true,
-    preparationTime: 15,
-    rating: 4.8,
-    reviewCount: 156
-  },
-  "2": {
-    id: "2",
-    name: "Ceviche Mixto",
-    description: "Pescado, pulpo y camarones marinados en limón con cebolla roja, ají limo y choclo",
-    price: 32.00,
-    category: "Ceviches",
-    available: true,
-    isPopular: true,
-    preparationTime: 18,
-    rating: 4.6,
-    reviewCount: 89
-  }
+import { useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Minus, Plus, Facebook, Instagram, ChevronDown } from "lucide-react"
+
+interface SideOption {
+  id: string
+  name: string
+  price: number
+  label?: string
 }
 
-interface PlatePageProps {
-  params: Promise<{
-    id: string
-  }>
+interface ExtraOption {
+  id: string
+  name: string
+  price: number
 }
 
-export default async function PlatePage({ params }: PlatePageProps) {
-  const { id } = await params
-  const plate = plateData[id as keyof typeof plateData]
+export default function ProductCustomization() {
+  const [selectedSide, setSelectedSide] = useState<string>("")
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([])
+  const [quantity, setQuantity] = useState(1)
+  const [comments, setComments] = useState("")
+  const [showMaxExtrasWarning, setShowMaxExtrasWarning] = useState(false)
 
-  if (!plate) {
-    return (
-      <div className="plate-page">
-        <Card>
-          <CardContent className="p-8 text-center">
-            <h1 className="text-2xl font-bold text-muted-foreground mb-4">
-              Plato no encontrado
-            </h1>
-            <p className="text-muted-foreground mb-6">
-              El plato que buscas no está disponible en este momento.
-            </p>
-            <Link href="/">
-              <Button>Volver al Inicio</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
+  const basePrice = 20000
+  const product = {
+    name: "Hamburguesa con Queso",
+    description: "Carne de res, queso cheddar, lechuga, tomate y cebolla",
+    price: basePrice,
+    image: "/classic-cheeseburger.png",
   }
+
+  const sideOptions: SideOption[] = [
+    { id: "papas-fritas", name: "Papas fritas", price: 0, label: "Gratis" },
+    { id: "papas-doradas", name: "Papas doradas", price: 2000 },
+    { id: "papas-camote", name: "Papas de camote", price: 3000 },
+  ]
+
+  const extraOptions: ExtraOption[] = [
+    { id: "queso-extra", name: "Queso extra", price: 2500 },
+    { id: "tocineta", name: "Tocineta", price: 4000 },
+    { id: "aguacate", name: "Aguacate", price: 3500 },
+  ]
+
+  const handleExtraChange = (extraId: string, checked: boolean) => {
+    if (checked) {
+      if (selectedExtras.length >= 3) {
+        setShowMaxExtrasWarning(true)
+        setTimeout(() => setShowMaxExtrasWarning(false), 3000)
+        return
+      }
+      setSelectedExtras([...selectedExtras, extraId])
+    } else {
+      setSelectedExtras(selectedExtras.filter((id) => id !== extraId))
+    }
+  }
+
+  const calculateTotal = () => {
+    let total = basePrice
+
+    // Add side price
+    const selectedSideOption = sideOptions.find((side) => side.id === selectedSide)
+    if (selectedSideOption) {
+      total += selectedSideOption.price
+    }
+
+    // Add extras prices
+    selectedExtras.forEach((extraId) => {
+      const extra = extraOptions.find((e) => e.id === extraId)
+      if (extra) {
+        total += extra.price
+      }
+    })
+
+    return total * quantity
+  }
+
+  const formatPrice = (price: number) => {
+    return `$${price.toLocaleString()}`
+  }
+
+  const isAddToCartEnabled = selectedSide !== ""
 
   return (
-    <div className="plate-page">
-      {/* Header con navegación */}
-      <header className="plate-header">
-        <Link href="/" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Volver al Inicio
-        </Link>
-        
-        <Badge variant={plate.available ? "secondary" : "destructive"}>
-          {plate.available ? "Disponible" : "Agotado"}
-        </Badge>
+    <div className="min-h-screen bg-[#FAFCFE]">
+      {/* Header */}
+      <header className="bg-[#0056C6] sticky top-0 z-50">
+        <div className="max-w-[1110px] mx-auto px-4">
+          <div className="flex items-center justify-center h-16">
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
+                Menú
+              </a>
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
+                Nosotros
+              </a>
+              <div className="mx-8">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-[#0056C6] rounded-full flex items-center justify-center">
+                    <div className="w-4 h-4 bg-white rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
+                Mi Orden
+              </a>
+              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
+                Contáctanos
+              </a>
+            </nav>
+            <div className="md:hidden">
+              <Button variant="ghost" size="sm" className="text-white hover:text-[#5CEFFA]">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </Button>
+            </div>
+          </div>
+        </div>
       </header>
 
-      {/* Contenido principal */}
-      <div className="plate-content">
-        {/* Columna principal - Detalles */}
-        <div className="plate-details">
-          
-          {/* Imagen del plato */}
-          <section className="plate-image">
-            <Card>
-              <CardContent className="p-4">
-                <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">[IMAGEN DEL CEVICHE]</span>
+      <div className="max-w-[1110px] mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left Column - Desktop: 8 cols, Mobile: full width */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Product Summary Card */}
+            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
+              <div className="flex items-start space-x-4">
+                <img
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.name}
+                  className="w-20 h-20 rounded-[30px] object-cover flex-shrink-0"
+                />
+                <div className="flex-1">
+                  <h2 className="text-base font-semibold text-gray-900 mb-1">{product.name}</h2>
+                  <p className="text-sm text-[#8C8CA1] mb-2">{product.description}</p>
+                  <p className="text-base font-semibold text-gray-900">{formatPrice(product.price)}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Información básica */}
-          <section className="plate-info">
-            <Card>
-              <CardHeader>
-                <CardTitle>{plate.name}</CardTitle>
-                <CardDescription>{plate.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Ingredientes:</h4>
-                    <p className="text-muted-foreground">[Pescado fresco, limón, cebolla roja, ají limo, culantro]</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Opciones de personalización */}
-          <section className="plate-options">
-            <Card>
-              <CardHeader>
-                <CardTitle>Personaliza tu pedido</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {/* Selección de Proteína (Radio) */}
-                  <div className="protein-selection">
-                    <h4 className="font-semibold mb-3">Elige tu pescado:</h4>
-                    <div className="space-y-2">
-                      <label className="protein-option">
-                        <input type="radio" name="protein" value="lenguado" defaultChecked />
-                        <span className="option-content">
-                          <span className="option-name">Lenguado</span>
-                          <span className="option-price">Base</span>
-                        </span>
-                      </label>
-                      <label className="protein-option">
-                        <input type="radio" name="protein" value="corvina" />
-                        <span className="option-content">
-                          <span className="option-name">Corvina</span>
-                          <span className="option-price">+S/. 3.00</span>
-                        </span>
-                      </label>
-                      <label className="protein-option">
-                        <input type="radio" name="protein" value="mero" />
-                        <span className="option-content">
-                          <span className="option-name">Mero</span>
-                          <span className="option-price">+S/. 5.00</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Acompañamientos (Checkbox) */}
-                  <div className="sides-selection">
-                    <h4 className="font-semibold mb-3">Acompañamientos:</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Camote</span>
-                          <span className="option-price">+S/. 2.00</span>
-                        </span>
-                      </label>
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Choclo</span>
-                          <span className="option-price">+S/. 2.50</span>
-                        </span>
-                      </label>
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Yuca</span>
-                          <span className="option-price">+S/. 2.00</span>
-                        </span>
-                      </label>
-                      <label className="side-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Cancha</span>
-                          <span className="option-price">+S/. 1.50</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Ingredientes Extra (Checkbox) */}
-                  <div className="extras-selection">
-                    <h4 className="font-semibold mb-3">Ingredientes extra:</h4>
-                    <div className="space-y-2">
-                      <label className="extra-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Pulpo</span>
-                          <span className="option-price">+S/. 8.00</span>
-                        </span>
-                      </label>
-                      <label className="extra-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Camarones</span>
-                          <span className="option-price">+S/. 10.00</span>
-                        </span>
-                      </label>
-                      <label className="extra-option">
-                        <input type="checkbox" />
-                        <span className="option-content">
-                          <span className="option-name">Conchas negras</span>
-                          <span className="option-price">+S/. 12.00</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Nivel de Ají (Radio) */}
-                  <div className="spice-selection">
-                    <h4 className="font-semibold mb-3">Nivel de ají:</h4>
-                    <div className="spice-options">
-                      <label className="spice-option">
-                        <input type="radio" name="spice" value="sin-aji" defaultChecked />
-                        <span className="spice-label">Sin ají</span>
-                      </label>
-                      <label className="spice-option">
-                        <input type="radio" name="spice" value="normal" />
-                        <span className="spice-label">Normal</span>
-                      </label>
-                      <label className="spice-option">
-                        <input type="radio" name="spice" value="fuerte" />
-                        <span className="spice-label">Fuerte</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        </div>
-
-        {/* Barra lateral - Precio y acciones */}
-        <aside className="plate-sidebar">
-          <Card className="sticky top-6">
-            <CardHeader>
-              <CardTitle className="text-xl">{plate.name}</CardTitle>
-              <CardDescription>{plate.category}</CardDescription>
-            </CardHeader>
-            <CardContent className="plate-actions space-y-4">
-              {/* Precio */}
-              <div className="flex justify-between items-center">
-                <span className="text-3xl font-bold text-green-600">
-                  S/. {plate.price.toFixed(2)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {plate.preparationTime} min
-                </span>
               </div>
+            </Card>
 
-              {/* Badges */}
-              <div className="flex flex-wrap gap-2">
-                {plate.isPopular && (
-                  <Badge className="bg-orange-500">Popular</Badge>
+            {/* Side Selection Card */}
+            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Selecciona tu acompañamiento</h3>
+                <Badge variant="secondary" className="bg-[#ECF1F4] text-[#8C8CA1] text-xs">
+                  Obligatorio
+                </Badge>
+              </div>
+              <p className="text-sm text-[#8C8CA1] mb-4">Selecciona 1 opción</p>
+
+              <RadioGroup value={selectedSide} onValueChange={setSelectedSide} className="space-y-3">
+                {sideOptions.map((option, index) => (
+                  <div key={option.id}>
+                    <div className="flex items-center justify-between py-3">
+                      <div className="flex items-center space-x-3">
+                        <RadioGroupItem value={option.id} id={option.id} />
+                        <Label htmlFor={option.id} className="text-sm font-medium cursor-pointer">
+                          {option.name}
+                        </Label>
+                      </div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {option.label || (option.price > 0 ? `+${formatPrice(option.price)}` : "Gratis")}
+                      </div>
+                    </div>
+                    {index < sideOptions.length - 1 && <div className="border-b border-[#ECF1F4]"></div>}
+                  </div>
+                ))}
+              </RadioGroup>
+            </Card>
+
+            {/* Extras Card */}
+            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Agrega más sabor a tu orden</h3>
+                <Badge variant="secondary" className="bg-[#ECF1F4] text-[#8C8CA1] text-xs">
+                  Opcional
+                </Badge>
+              </div>
+              <p className="text-sm text-[#8C8CA1] mb-4">Selecciona hasta 3 opciones (opcional)</p>
+
+              {showMaxExtrasWarning && (
+                <div className="mb-4 p-3 bg-[#ECF1F4] rounded-lg">
+                  <p className="text-sm text-[#8C8CA1]">Máximo 3 opciones</p>
+                </div>
+              )}
+
+              <div className="space-y-3">
+                {extraOptions.map((option, index) => (
+                  <div key={option.id}>
+                    <div className="flex items-center justify-between py-3">
+                      <div className="flex items-center space-x-3">
+                        <Checkbox
+                          id={option.id}
+                          checked={selectedExtras.includes(option.id)}
+                          onCheckedChange={(checked) => handleExtraChange(option.id, checked as boolean)}
+                        />
+                        <Label htmlFor={option.id} className="text-sm font-medium cursor-pointer">
+                          {option.name}
+                        </Label>
+                      </div>
+                      <div className="text-sm font-medium text-gray-900">+{formatPrice(option.price)}</div>
+                    </div>
+                    {index < extraOptions.length - 1 && <div className="border-b border-[#ECF1F4]"></div>}
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Comments Card */}
+            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Comentarios especiales</h3>
+                <Badge variant="secondary" className="bg-[#ECF1F4] text-[#8C8CA1] text-xs">
+                  Opcional
+                </Badge>
+              </div>
+              <p className="text-sm text-[#8C8CA1] mb-4">Agregamos cualquier modificación especial para tu plato</p>
+
+              <Textarea
+                placeholder="Ej: Sin cebolla, salsa aparte, bien cocido, etc…"
+                value={comments}
+                onChange={(e) => setComments(e.target.value)}
+                maxLength={200}
+                className="min-h-[100px] resize-none border-[#ECF1F4] focus:border-[#5CEFFA] focus:ring-[#5CEFFA]"
+              />
+              <p className="text-xs text-[#8C8CA1] mt-2">{comments.length}/200 caracteres</p>
+            </Card>
+          </div>
+
+          {/* Right Column - Desktop: 4 cols, Mobile: full width */}
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-24">
+              <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumen del pedido</h3>
+
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-gray-600">{product.description}</p>
+                  <p className="text-base font-semibold text-gray-900">{formatPrice(product.price)}</p>
+                </div>
+
+                {/* Quantity Control */}
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-sm font-medium text-gray-900">Cantidad</span>
+                  <div className="flex items-center space-x-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-8 h-8 p-0 border-[#ECF1F4] bg-transparent"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <span className="w-8 text-center text-sm font-medium">{quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-8 h-8 p-0 border-[#ECF1F4] bg-transparent"
+                      onClick={() => setQuantity(quantity + 1)}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Validation Banner */}
+                {!isAddToCartEnabled && (
+                  <div className="mb-4 p-3 bg-[#ECF1F4] rounded-lg">
+                    <p className="text-sm text-[#8C8CA1]">
+                      Faltan selecciones obligatorias: Selecciona tu acompañamiento
+                    </p>
+                  </div>
                 )}
-              </div>
 
-              {/* Botones */}
-              <Button 
-                className="w-full" 
-                size="lg"
-                disabled={!plate.available}
-              >
-                {plate.available ? "Agregar al Carrito" : "No Disponible"}
-              </Button>
-
-              <Button variant="outline" className="w-full" disabled>
-                Ver Carrito (No disponible)
-              </Button>
-            </CardContent>
-          </Card>
-        </aside>
+                {/* Add to Cart Button */}
+                <Button
+                  className={`w-full h-12 text-base font-semibold rounded-xl ${
+                    isAddToCartEnabled
+                      ? "bg-[#0056C6] hover:bg-[#004299] text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
+                  }`}
+                  disabled={!isAddToCartEnabled}
+                >
+                  Agregar al carrito – {formatPrice(calculateTotal())}
+                </Button>
+              </Card>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Footer Section */}
+      <footer className="bg-[#0056C6] text-white">
+        <div className="max-w-[1110px] mx-auto px-4 py-12">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-[#0056C6] rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 bg-white rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center justify-center space-x-12 mb-8">
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Menú
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Eventos
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Atención al cliente
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Métodos de Pago
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Políticas y Términos
+            </a>
+            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+              Contáctanos
+            </a>
+          </nav>
+
+          {/* Mobile Navigation */}
+          <div className="md:hidden space-y-4 mb-8">
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Menú</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Eventos</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Atención al cliente</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Métodos de Pago</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Políticas y Términos</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="border-b border-white/20 pb-4">
+              <button className="flex items-center justify-between w-full text-left">
+                <span className="text-sm font-medium">Contáctanos</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Tagline */}
+          <div className="text-center mb-8">
+            <p className="text-sm text-white/80">Sabores Auténticos, Momentos Inolvidables.</p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
+              Ordene Ahora
+            </Button>
+            <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
+              Reserve Ahora
+            </Button>
+          </div>
+
+          {/* Social Media */}
+          <div className="flex justify-center space-x-6 mb-4">
+            <a
+              href="#"
+              className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <Facebook className="w-5 h-5" />
+            </a>
+            <a
+              href="#"
+              className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
+
+          {/* Social Media Text */}
+          <div className="text-center">
+            <p className="text-xs text-white/60">Síguenos En Nuestras Redes Sociales</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

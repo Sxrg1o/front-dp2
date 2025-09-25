@@ -6,16 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  Shrimp, 
-  User, 
-  LogOut, 
-  RefreshCw, 
-  Phone, 
-  CheckCircle, 
-  Info, 
-  Star, 
-  Clock, 
+import {
+  Shrimp,
+  User,
+  LogOut,
+  RefreshCw,
+  Phone,
+  CheckCircle,
+  Info,
+  Star,
+  Clock,
   Wifi,
   Loader2,
   ShoppingCart,
@@ -66,7 +66,7 @@ const localMenuItems: MenuItem[] = [
   },
   {
     id: 2,
-    name: "Ceviche Mixto", 
+    name: "Ceviche Mixto",
     description: "Pescado, pulpo, camarones y conchas negras en leche de tigre especial",
     price: 32.00,
     rating: 4.8,
@@ -201,7 +201,7 @@ export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [cart, setCart] = useState<number[]>([])
   const [favorites, setFavorites] = useState<number[]>([])
-  const [expandedCategories, setExpandedCategories] = useState<{[key: string]: boolean}>({
+  const [expandedCategories, setExpandedCategories] = useState<{ [key: string]: boolean }>({
     "Entradas": true,
     "Criollo": true,
     "Pescados": true,
@@ -226,7 +226,7 @@ export default function HomePage() {
       let price = '0'
       let description = item.description
       let image = "/placeholder.jpg" // Imagen por defecto
-      
+
       try {
         // Intentar parsear el name
         const nameData = JSON.parse(item.name)
@@ -236,7 +236,7 @@ export default function HomePage() {
       } catch (e) {
         // Si no se puede parsear, usar el valor original
       }
-      
+
       try {
         // Intentar parsear el price
         const priceData = JSON.parse(item.price)
@@ -246,7 +246,7 @@ export default function HomePage() {
       } catch (e) {
         price = item.price
       }
-      
+
       try {
         // Intentar parsear la description
         const descData = JSON.parse(item.description)
@@ -256,7 +256,7 @@ export default function HomePage() {
       } catch (e) {
         // Si no se puede parsear, usar el valor original
       }
-      
+
       try {
         // Intentar parsear la image - AQUÍ ESTÁ EL FIX
         // Reemplazar comillas simples por dobles para hacer JSON válido
@@ -270,7 +270,7 @@ export default function HomePage() {
         // Si falla, usar imagen local como fallback
         image = localMenuItems[index % localMenuItems.length]?.image || "/placeholder.jpg"
       }
-      
+
       return {
         id: index + 1,
         name: name,
@@ -287,47 +287,47 @@ export default function HomePage() {
 
   const handleViewMenu = async () => {
     setIsLoading(true)
-    
+
     try {
       // PASO 1: Llamar a test-selenium
       setLoadingStep('Iniciando automatización Selenium...')
-      
+
       const testResponse = await fetch('/api/auth/test-selenium', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       })
-      
+
       const testResult = await testResponse.json()
       console.log('Test Selenium Result:', testResult)
-      
+
       if (!testResult.success) {
         throw new Error(testResult.error || 'Error en test-selenium')
       }
-      
+
       // Esperar un poco antes del siguiente paso
       await new Promise(resolve => setTimeout(resolve, 2000))
 
       // PASO 2: Llamar al menú
       setLoadingStep('Obteniendo datos del menú...')
-      
+
       const menuResponse = await fetch('/api/menu/pizzas', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       })
-      
+
       const menuResult = await menuResponse.json()
       console.log('Menu Result:', menuResult)
-      
+
       if (!menuResult.success) {
         throw new Error(menuResult.error || 'Error al obtener menú')
       }
-      
+
       const apiMenuData: ApiMenuItem[] = menuResult.data
-      
+
       // Convertir datos de API a nuestro formato
       if (Array.isArray(apiMenuData) && apiMenuData.length > 0) {
         const convertedItems = convertApiDataToMenuItems(apiMenuData)
@@ -338,9 +338,9 @@ export default function HomePage() {
       } else {
         throw new Error('No se recibieron datos válidos de la API')
       }
-      
+
       await new Promise(resolve => setTimeout(resolve, 1500))
-      
+
     } catch (error) {
       console.error('Error en API calls:', error)
       setLoadingStep(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`)
@@ -389,7 +389,7 @@ export default function HomePage() {
     }
     acc[dish.category].push(dish)
     return acc
-  }, {} as {[key: string]: MenuItem[]})
+  }, {} as { [key: string]: MenuItem[] })
 
   if (!isAuthenticated) {
     return (
@@ -416,8 +416,8 @@ export default function HomePage() {
                 <p className="text-gray-600 text-sm">{loadingStep}</p>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3">
-                <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full animate-pulse transition-all duration-500" 
-                     style={{width: isLoading ? '75%' : '100%'}}></div>
+                <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full animate-pulse transition-all duration-500"
+                  style={{ width: isLoading ? '75%' : '100%' }}></div>
               </div>
               <div className="text-xs text-gray-500 flex items-center justify-center space-x-1">
                 <Wifi className="w-3 h-3" />
@@ -437,9 +437,9 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button 
+              <Button
                 onClick={handleViewMenu}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white flex items-center space-x-2"
+                className="bg-primary hover:bg-cyan-700 text-white flex items-center space-x-2"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -479,34 +479,33 @@ export default function HomePage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-8 py-8">
         {/* Title */}
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Nuestro Menú</h1>
 
         {/* Search and Filters */}
         <div className="mb-8">
-          <div className="relative mb-4">
+          <div className="relative mb-4 w-full md:w-full lg:w-5/12">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
               placeholder="Buscar platos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-12 text-lg"
+              className="w-full h-12 text-lg rounded-md"
             />
           </div>
 
-          <div className="flex gap-2 flex-wrap justify-center">
+          <div className="flex gap-2 flex-wrap justify-center md:justify-start lg:justify-start">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className={`rounded-full px-4 py-2 ${
-                  selectedCategory === category 
-                    ? "bg-cyan-600 text-white" 
+                className={`rounded-full px-4 py-2 ${selectedCategory === category
+                    ? "bg-primary text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
+                  }`}
               >
                 {category}
               </Button>
@@ -527,13 +526,13 @@ export default function HomePage() {
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-400 mr-2" />
               <p className="text-sm text-green-700">
-                Datos de API actualizados: {lastUpdate.toLocaleTimeString()} 
+                Datos de API actualizados: {lastUpdate.toLocaleTimeString()}
                 ({menuItems.length} items)
               </p>
             </div>
           </div>
         )}
-        
+
         {!isApiData && (
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
             <div className="flex items-center">
@@ -551,11 +550,11 @@ export default function HomePage() {
             {/* Category Section */}
             <div className="bg-gray-200 rounded-lg p-6">
               {/* Category Header */}
-              <div 
-                className="flex items-center justify-between cursor-pointer mb-4"
+              <div
+                className="flex items-center cursor-pointer mb-4"
                 onClick={() => toggleCategory(category)}
               >
-                <h2 className="text-xl font-bold text-gray-800">{category}</h2>
+                <h2 className="text-xl font-bold text-gray-800 flex-1 text-center">{category}</h2>
                 {expandedCategories[category] ? (
                   <ChevronUp className="w-5 h-5 text-gray-600" />
                 ) : (
@@ -565,15 +564,15 @@ export default function HomePage() {
 
               {/* Dishes Grid */}
               {expandedCategories[category] && (
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
                   {dishes.map((dish) => (
-                    <div key={dish.id} className="text-center">
+                    <article key={dish.id} className="text-center">
                       {/* Image Placeholder */}
-                      <div className="relative mb-2">
+                      <div className="relative">
                         <img
                           src={dish.image || "/placeholder.svg"}
                           alt={dish.name}
-                          className="w-full h-24 object-cover rounded-lg bg-gray-300"
+                          className="object-cover rounded-t-3xl bg-gray-300 aspect-[16/9]"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement
                             target.src = "/placeholder.jpg"
@@ -583,17 +582,17 @@ export default function HomePage() {
                           <Badge className="absolute top-1 left-1 bg-yellow-500 text-white text-xs">Popular</Badge>
                         )}
                       </div>
-                      
+
                       {/* Dish Name */}
-                      <div className="bg-cyan-600 text-white px-2 py-1 rounded text-sm font-medium">
+                      <h3 className="bg-primary text-white px-2 py-2 rounded-b-3xl text-sm font-medium">
                         {dish.name}
-                      </div>
-                      
+                      </h3>
+
                       {/* Price */}
-                      <div className="mt-1 text-sm font-bold text-gray-800">
+                      <p className="mt-1 text-sm font-bold text-gray-800">
                         {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
-                      </div>
-                    </div>
+                      </p>
+                    </article>
                   ))}
                 </div>
               )}
