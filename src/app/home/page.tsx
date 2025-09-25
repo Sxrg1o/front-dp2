@@ -578,7 +578,7 @@ export default function HomePage() {
 
                           {/* Price */}
                           <p className="mt-1 text-sm font-bold text-gray-800">
-                            {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
+                            {/* {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`} */}
                           </p>
                         </article>
                       </Link>
