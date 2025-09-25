@@ -31,6 +31,10 @@ import {
 import Link from 'next/link'
 import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle
+} from '@/components/ui/dialog'
+
 
 // Tipo para la API
 interface ApiMenuItem {
@@ -190,12 +194,15 @@ const localMenuItems: MenuItem[] = [
 ]
 
 const categories = ["Todos", "Criollo", "Pescados", "Bebidas", "Entradas"]
+const VISIBLE_COUNT = 5
+const visibleCategories = categories.slice(0, VISIBLE_COUNT)
+const hasMoreCategories = categories.length > VISIBLE_COUNT
 
 export default function HomePage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [loadingStep, setLoadingStep] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(true)/*****cambiar */
   const [menuItems, setMenuItems] = useState<MenuItem[]>(localMenuItems)
   const [isApiData, setIsApiData] = useState(false)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
@@ -209,15 +216,17 @@ export default function HomePage() {
     "Pescados": true,
     "Bebidas": true
   })
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
+  const [categorySearch, setCategorySearch] = useState("")
 
   useEffect(() => {
     // Verificar autenticación
     const authStatus = localStorage.getItem("isAuthenticated")
     if (authStatus === "true") {
       setIsAuthenticated(true)
-    } else {
+    } /*else {
       router.push("/")
-    }
+    }*/
   }, [router])
 
   // Función para convertir datos de API a nuestro formato
@@ -459,7 +468,7 @@ export default function HomePage() {
           </div>
 
           <div className="flex gap-2 flex-wrap justify-center">
-            {categories.map((category) => (
+            {visibleCategories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
@@ -473,13 +482,24 @@ export default function HomePage() {
                 {category}
               </Button>
             ))}
-            <Button
+            {/*<Button
               variant="outline"
               size="sm"
               className="rounded-full px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300"
             >
               ...
-            </Button>
+            </Button>*/
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={() => setIsCategoryModalOpen(true)}
+                aria-label="Ver todas las categorías"
+                title="Ver todas las categorías"
+              >
+                …
+              </Button>
+            }
           </div>
         </div>
 
@@ -508,65 +528,136 @@ export default function HomePage() {
         )}
 
         {/* Menu Sections */}
-        {Object.entries(dishesByCategory).map(([category, dishes]) => (
-          <div key={category} className="mb-8">
-            {/* Category Section */}
-            <div className="bg-gray-200 rounded-lg p-6">
-              {/* Category Header */}
-              <div
-                className="flex items-center cursor-pointer mb-4"
-                onClick={() => toggleCategory(category)}
-              >
-                <h2 className="text-xl font-bold text-gray-800 flex-1 text-center">{category}</h2>
+        {filteredDishes.length > 0 ? (
+          Object.entries(dishesByCategory).map(([category, dishes]) => (
+            <div key={category} className="mb-8">
+              {/* Category Section */}
+              <div className="bg-gray-200 rounded-lg p-6">
+                {/* Category Header */}
+                <div
+                  className="flex items-center cursor-pointer mb-4"
+                  onClick={() => toggleCategory(category)}
+                >
+                  <h2 className="text-xl font-bold text-gray-800 flex-1 text-center">{category}</h2>
 
-                {expandedCategories[category] ? (
-                  <ChevronUp className="w-5 h-5 text-gray-600" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-600" />
+                  {expandedCategories[category] ? (
+                    <ChevronUp className="w-5 h-5 text-gray-600" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-600" />
+                  )}
+                </div>
+                {/* Mostrar <hr> solo si está expandido */}
+                {expandedCategories[category] && <hr className="border-blue-700" />}
+
+                {/* Dishes Grid */}
+                {expandedCategories[category] && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 py-5">
+                    {dishes.map((dish) => (
+                      <Link key={dish.id} href={`/plato/${dish.id}`}>
+                        <article className="text-center cursor-pointer hover:scale-105 transition-transform duration-200">
+                          {/* Image Placeholder */}
+                          <div className="relative">
+                            <img
+                              src={dish.image || "/placeholder.svg"}
+                              alt={dish.name || "Imagen no disponible"}
+                              className="object-cover rounded-t-3xl bg-gray-300 aspect-[16/9]"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement
+                                target.src = "/placeholder.jpg"
+                              }}
+                            />
+                            {dish.popular && (
+                              <Badge className="absolute top-1 left-1 bg-yellow-500 text-white text-xs">Popular</Badge>
+                            )}
+                          </div>
+
+                          {/* Dish Name */}
+                          <h3 className="bg-[#0056C6] text-white px-2 py-2 rounded-b-3xl text-sm font-medium">
+                            {dish.name || "Nombre no disponible"}
+                          </h3>
+
+                          {/* Price */}
+                          <p className="mt-1 text-sm font-bold text-gray-800">
+                            {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
+                          </p>
+                        </article>
+                      </Link>
+                    ))}
+                  </div>
                 )}
               </div>
-              {/* Mostrar <hr> solo si está expandido */}
-              {expandedCategories[category] && <hr className="border-blue-700" />}
-
-              {/* Dishes Grid */}
-              {expandedCategories[category] && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 py-5">
-                  {dishes.map((dish) => (
-                    <Link key={dish.id} href={`/plato/${dish.id}`}>
-                      <article className="text-center cursor-pointer hover:scale-105 transition-transform duration-200">
-                        {/* Image Placeholder */}
-                        <div className="relative">
-                          <img
-                            src={dish.image || "/placeholder.svg"}
-                            alt={dish.name}
-                            className="object-cover rounded-t-3xl bg-gray-300 aspect-[16/9]"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = "/placeholder.jpg"
-                            }}
-                          />
-                          {dish.popular && (
-                            <Badge className="absolute top-1 left-1 bg-yellow-500 text-white text-xs">Popular</Badge>
-                          )}
-                        </div>
-
-                        {/* Dish Name */}
-                        <h3 className="bg-[#0056C6] text-white px-2 py-2 rounded-b-3xl text-sm font-medium">
-                          {dish.name}
-                        </h3>
-
-                        {/* Price */}
-                        {/* <p className="mt-1 text-sm font-bold text-gray-800">
-                          {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
-                        </p> */}
-                      </article>
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <Card className="p-8 text-center bg-[#F5F7FA] shadow-sm rounded-xl">
+            <div className="flex flex-col items-center">
+              <Search className="w-10 h-10 text-gray-500 mb-4" />
+              <h2 className="text-xl font-bold mb-2">No Tenemos El Producto</h2>
+              <p className="text-gray-600 mb-2">Ingrese Otro</p>
+              <p className="text-[#0056C6] font-semibold">“{searchTerm}”</p>
+              <p className="text-gray-500 mt-2 text-sm">
+                No encontramos ningún producto con tu búsqueda.<br />
+                Revisa ortografía o prueba con términos más generales.
+              </p>
+            </div>
+          </Card>
+        )}
+
+        {/* MODAL */
+          <Dialog open={isCategoryModalOpen} onOpenChange={setIsCategoryModalOpen}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Selección de filtros</DialogTitle>
+              </DialogHeader>
+
+
+              <div className="mb-3">
+                <div className="relative">
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Buscar categoría…"
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                    className="pr-9"
+                  />
+                </div>
+              </div>
+
+              {/* Listado scrollable */}
+              <div className="space-y-2 max-h-[50vh] overflow-auto pr-1">
+                {categories
+                  .filter(c => c.toLowerCase().includes(categorySearch.toLowerCase()))
+                  .map((c) => {
+                    const active = selectedCategory === c
+                    return (
+                      <button
+                        key={c}
+                        onClick={() => {
+                          setSelectedCategory(c)
+                          setIsCategoryModalOpen(false)
+                          setCategorySearch("")
+                        }}
+                        className={[
+                          "w-full rounded-xl border px-4 py-3 text-sm font-medium transition",
+                          active
+                            ? "bg-[#0056C6] text-white border-transparent"
+                            : "bg-white hover:bg-gray-100 border-gray-200 text-gray-800"
+                        ].join(" ")}
+                      >
+                        {c}
+                      </button>
+                    )
+                  })}
+              </div>
+            </DialogContent>
+          </Dialog>
+
+
+
+
+        }
+
+
       </main>
 
       {/* Footer */}
