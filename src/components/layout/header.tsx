@@ -56,11 +56,11 @@ export default function Header({
             </Link>
           </div>
 
-          {/* Desktop Header con grid balanceado */}
-          <div className="hidden md:grid grid-cols-3 items-center h-16 w-full">
+          {/* Desktop Header - FLEX en lugar de GRID */}
+          <div className="hidden md:flex items-center justify-between w-full h-16">
             {/* Left side - Navigation links */}
-            <div className="flex justify-start space-x-8">
-              <Link href="/menu" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
+            <div className="flex items-center space-x-8">
+              <Link href="/home" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Menú
               </Link>
               <Link href="/about" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
@@ -68,84 +68,45 @@ export default function Header({
               </Link>
             </div>
 
-            {/* Logo al centro */}
-            <div className="flex justify-center">
+            {/* Logo al centro - ABSOLUTO */}
+            <div className="absolute left-1/2 transform -translate-x-1/2">
               <Link href="/home">
-                <img src="/DINE LINE.svg" alt="DINE LINE" className="h-16 w-auto" />
+                <img src="/DINE LINE.svg" alt="DINE LINE" className="h-16 w-auto transform translate-y-7" />
               </Link>
             </div>
 
-            {/* Right side - Navigation links */}
-            <div className="flex justify-end space-x-8">
+            {/* Right side - Navigation links + acciones */}
+            <div className="flex items-center space-x-8">
               <Link href="/order" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Mi Orden
               </Link>
               <Link href="/contact" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Contáctanos
               </Link>
+
+              {/* Acciones opcionales */}
+              {showFavorite && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onFavoriteToggle}
+                  className={`text-white hover:bg-white/10 ${isFavorite ? "text-red-300" : ""}`}
+                >
+                  <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
+                </Button>
+              )}
+
+              {showCart && (
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {cartItems > 0 && (
+                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-white text-[#0056C6] text-xs flex items-center justify-center font-bold">
+                      {cartItems}
+                    </span>
+                  )}
+                </Button>
+              )}
             </div>
-          </div>
-
-          {/* Acciones Desktop */}
-          <div className="hidden md:flex items-center space-x-4 absolute right-32">
-            {showFavorite && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onFavoriteToggle}
-                className={`text-white hover:bg-white/10 ${isFavorite ? "text-red-300" : ""}`}
-              >
-                <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
-              </Button>
-            )}
-
-            {showCart && (
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 relative">
-                <ShoppingCart className="h-5 w-5" />
-                {cartItems > 0 && (
-                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-white text-[#0056C6] text-xs flex items-center justify-center font-bold">
-                    {cartItems}
-                  </span>
-                )}
-              </Button>
-            )}
-
-            {showLogout && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onLogout}
-                className="text-white hover:bg-white/10"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            )}
-
-            {userInfo && (
-              <div className="bg-white/10 px-3 py-1 rounded-lg flex items-center">
-                <span className="text-sm font-medium text-white">{userInfo}</span>
-              </div>
-            )}
-
-            {showUpdateButton && (
-              <Button
-                onClick={onUpdateClick}
-                className="bg-white/10 hover:bg-white/20 text-white flex items-center space-x-2"
-                disabled={isUpdating}
-              >
-                {isUpdating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Actualizando...</span>
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="w-4 h-4" />
-                    <span>Actualizar Menú</span>
-                  </>
-                )}
-              </Button>
-            )}
           </div>
 
           {/* Hamburguesa - Mobile */}
@@ -165,7 +126,7 @@ export default function Header({
       {/* Menú Mobile alineado a la derecha */}
       {mobileOpen && (
         <div className="md:hidden bg-[#0056C6] text-white px-6 pb-4 space-y-3 text-right">
-          <Link href="/menu" className="block hover:text-[#5CEFFA]">Menú</Link>
+          <Link href="/home" className="block hover:text-[#5CEFFA]">Menú</Link>
           <Link href="/about" className="block hover:text-[#5CEFFA]">Nosotros</Link>
           <Link href="/order" className="block hover:text-[#5CEFFA]">Mi Orden</Link>
           <Link href="/contact" className="block hover:text-[#5CEFFA]">Contáctanos</Link>

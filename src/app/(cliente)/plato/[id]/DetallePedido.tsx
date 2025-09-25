@@ -264,12 +264,12 @@ export default function DetallePedido() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFCFE]">
+    <div className="min-h-screen bg-[#FAFCFE] flex flex-col">
       {/* Header */}
       <Header 
         showFullNavigation={true}
       />
-
+<main>
       <div className="max-w-[1110px] mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column - Desktop: 8 cols, Mobile: full width */}
@@ -455,9 +455,10 @@ export default function DetallePedido() {
           </div>
         </div>
       </div>
-
+</main>
       {/* Footer */}
       <Footer />
+
     </div>
   )
 }

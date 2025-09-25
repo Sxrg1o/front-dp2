@@ -189,13 +189,14 @@ export default function PlatoDetailPage() {
   const totalPrice = dish.price * quantity
 
   return (
-    <div className="min-h-screen bg-[#FAFCFE]">
+    <div className="min-h-screen bg-[#FAFCFE] flex flex-col">
       {/* Header */}
       <Header 
         showFullNavigation={true}
       />
 
       {/* Main Content */}
+      <main className="flex-1">
       <div className="max-w-[1110px] mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Mobile: Image first, Desktop: Text first */}
@@ -292,7 +293,7 @@ export default function PlatoDetailPage() {
           </div>
         </div>
       </div>
-
+</main>
       {/* Footer */}
       <Footer />
     </div>

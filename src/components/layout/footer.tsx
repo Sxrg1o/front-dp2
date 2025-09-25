@@ -6,18 +6,18 @@ import { Facebook, Instagram, ChevronDown } from "lucide-react"
 export default function Footer() {
   return (
     <footer className="bg-[#0056C6] text-white">
-      <div className="max-w-[1110px] mx-auto px-4 py-12">
+      <div className="max-w-[1110px] mx-auto px-4 py-8">
         {/* Logo */}
-        <div className="flex justify-center mb-8">
+<div className="flex justify-center mb-8 relative">
           <img
             src="/dineline2.svg"
             alt="DINE LINE"
-            className="h-20 w-auto "
+            className="h-16 w-auto transform -translate-y-16 bg-white rounded-lg px-2 py-1 shadow-lg"
           />
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center justify-center space-x-12 mb-8">
+        <nav className="hidden md:flex items-center justify-center space-x-12 mb-6">
           <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
             Nosotros
           </a>
@@ -33,7 +33,7 @@ export default function Footer() {
         </nav>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden space-y-4 mb-8">
+        <div className="md:hidden space-y-3 mb-6">
           <div className="border-b border-white/20 pb-4">
             <button className="flex justify-center w-full">
               <span className="text-sm font-bold">Nosotros</span>
@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         {/* Tagline */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <p className="text-sm text-white/80">Sabores Auténticos, Momentos Inolvidables.</p>
         </div>
 
@@ -72,7 +72,7 @@ export default function Footer() {
         </div>*/}
 
         {/* Social Media */}
-        <div className="flex justify-center space-x-6 mb-4">
+        <div className="flex justify-center space-x-6 mb-3">
           <a
             href="#"
             className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"

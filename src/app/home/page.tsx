@@ -128,7 +128,7 @@ const localMenuItems: MenuItem[] = [
     price: 30.00,
     rating: 4.7,
     prepTime: "20 min",
-    image: "/placeholder.jpg",
+    image: "/chaudfa-de-mariscos-500x450.jpg",
     category: "Criollo",
     popular: false
   },
@@ -139,7 +139,7 @@ const localMenuItems: MenuItem[] = [
     price: 38.00,
     rating: 4.8,
     prepTime: "18 min",
-    image: "/placeholder.jpg",
+    image: "/maxresdefault.jpg",
     category: "Criollo",
     popular: false
   },
@@ -150,7 +150,7 @@ const localMenuItems: MenuItem[] = [
     price: 32.00,
     rating: 4.6,
     prepTime: "20 min",
-    image: "/placeholder.jpg",
+    image: "/6143e231d4bfcf3c4448e32e.jpg",
     category: "Pescados",
     popular: false
   },
@@ -161,7 +161,7 @@ const localMenuItems: MenuItem[] = [
     price: 40.00,
     rating: 4.9,
     prepTime: "25 min",
-    image: "/placeholder.jpg",
+    image: "/4.-Rice-with-black-scallops.jpg",
     category: "Criollo",
     popular: true
   },
@@ -172,7 +172,7 @@ const localMenuItems: MenuItem[] = [
     price: 35.00,
     rating: 4.7,
     prepTime: "22 min",
-    image: "/placeholder.jpg",
+    image: "/maxresdefault (1).jpg",
     category: "Criollo",
     popular: false
   },
@@ -183,7 +183,7 @@ const localMenuItems: MenuItem[] = [
     price: 42.00,
     rating: 4.8,
     prepTime: "30 min",
-    image: "/placeholder.jpg",
+    image: "/HQJJGNr2pPfcKZpbZ-2400-x.jpg",
     category: "Criollo",
     popular: true
   }
@@ -556,9 +556,9 @@ export default function HomePage() {
                         </h3>
 
                         {/* Price */}
-                        <p className="mt-1 text-sm font-bold text-gray-800">
+                        {/* <p className="mt-1 text-sm font-bold text-gray-800">
                           {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
-                        </p>
+                        </p> */}
                       </article>
                     </Link>
                   ))}
