@@ -29,6 +29,8 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import Link from 'next/link'
+import Header from "@/components/layout/header"
+import Footer from "@/components/layout/footer"
 
 // Tipo para la API
 interface ApiMenuItem {
@@ -433,50 +435,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                onClick={handleViewMenu}
-                className="bg-primary hover:bg-cyan-700 text-white flex items-center space-x-2"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Actualizando...</span>
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="w-4 h-4" />
-                    <span>Actualizar Menú</span>
-                  </>
-                )}
-              </Button>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {cart.length > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-cyan-600">
-                    {cart.length}
-                  </Badge>
-                )}
-              </Button>
-              {/* User Badge */}
-              <div className="bg-gray-200 px-3 py-1 rounded-lg flex items-center space-x-2">
-                <ArrowLeft className="w-4 h-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-800">JOSEPH ARTURO GUTIERREZ ALAYO</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header 
+        showFullNavigation={true}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-8 py-8">
@@ -485,17 +446,19 @@ export default function HomePage() {
 
         {/* Search and Filters */}
         <div className="mb-8">
-          <div className="relative mb-4 w-full md:w-full lg:w-5/12">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              placeholder="Buscar platos..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-12 text-lg rounded-md"
-            />
+          <div className="flex justify-center mb-4">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input
+                placeholder="Buscar platos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full h-12 text-lg rounded-md"
+              />
+            </div>
           </div>
 
-          <div className="flex gap-2 flex-wrap justify-center md:justify-start lg:justify-start">
+          <div className="flex gap-2 flex-wrap justify-center">
             {categories.map((category) => (
               <Button
                 key={category}
@@ -503,7 +466,7 @@ export default function HomePage() {
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
                 className={`rounded-full px-4 py-2 ${selectedCategory === category
-                    ? "bg-primary text-white"
+                    ? "bg-[#0056C6] text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
               >
@@ -538,7 +501,7 @@ export default function HomePage() {
             <div className="flex items-center">
               <Info className="w-5 h-5 text-yellow-400 mr-2" />
               <p className="text-sm text-yellow-700">
-                Mostrando menú local de cevichería. Haz click en "Actualizar Menú" para obtener datos externos.
+                Mostrando menú local de cevichería. Haz click en &quot;Actualizar Menú&quot; para obtener datos externos.
               </p>
             </div>
           </div>
@@ -566,33 +529,35 @@ export default function HomePage() {
               {expandedCategories[category] && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
                   {dishes.map((dish) => (
-                    <article key={dish.id} className="text-center">
-                      {/* Image Placeholder */}
-                      <div className="relative">
-                        <img
-                          src={dish.image || "/placeholder.svg"}
-                          alt={dish.name}
-                          className="object-cover rounded-t-3xl bg-gray-300 aspect-[16/9]"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement
-                            target.src = "/placeholder.jpg"
-                          }}
-                        />
-                        {dish.popular && (
-                          <Badge className="absolute top-1 left-1 bg-yellow-500 text-white text-xs">Popular</Badge>
-                        )}
-                      </div>
+                    <Link key={dish.id} href={`/plato/${dish.id}`}>
+                      <article className="text-center cursor-pointer hover:scale-105 transition-transform duration-200">
+                        {/* Image Placeholder */}
+                        <div className="relative">
+                          <img
+                            src={dish.image || "/placeholder.svg"}
+                            alt={dish.name}
+                            className="object-cover rounded-t-3xl bg-gray-300 aspect-[16/9]"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement
+                              target.src = "/placeholder.jpg"
+                            }}
+                          />
+                          {dish.popular && (
+                            <Badge className="absolute top-1 left-1 bg-yellow-500 text-white text-xs">Popular</Badge>
+                          )}
+                        </div>
 
-                      {/* Dish Name */}
-                      <h3 className="bg-primary text-white px-2 py-2 rounded-b-3xl text-sm font-medium">
-                        {dish.name}
-                      </h3>
+                        {/* Dish Name */}
+                        <h3 className="bg-[#0056C6] text-white px-2 py-2 rounded-b-3xl text-sm font-medium">
+                          {dish.name}
+                        </h3>
 
-                      {/* Price */}
-                      <p className="mt-1 text-sm font-bold text-gray-800">
-                        {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
-                      </p>
-                    </article>
+                        {/* Price */}
+                        <p className="mt-1 text-sm font-bold text-gray-800">
+                          {isApiData ? `$${dish.price.toFixed(2)}` : `S/ ${dish.price.toFixed(2)}`}
+                        </p>
+                      </article>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -600,6 +565,9 @@ export default function HomePage() {
           </div>
         ))}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

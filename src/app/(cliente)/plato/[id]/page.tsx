@@ -1,414 +1,300 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Minus, Plus, Facebook, Instagram, ChevronDown } from "lucide-react"
+import { Minus, Plus, Star, Clock } from "lucide-react"
+import Header from "@/components/layout/header"
+import Footer from "@/components/layout/footer"
+import Link from "next/link"
 
-interface SideOption {
-  id: string
+interface MenuItem {
+  id: number
   name: string
+  description: string
   price: number
-  label?: string
+  rating: number
+  prepTime: string
+  image: string
+  category: string
+  popular: boolean
 }
 
-interface ExtraOption {
-  id: string
-  name: string
-  price: number
-}
+// Menú estático de cevichería (mismo que en home)
+const localMenuItems: MenuItem[] = [
+  {
+    id: 1,
+    name: "Ceviche Clásico",
+    description: "Pescado fresco marinado en limón con cebolla morada, ají limo y camote",
+    price: 25.00,
+    rating: 4.9,
+    prepTime: "15 min",
+    image: "/fresh-ceviche-with-red-onions-and-sweet-potato.jpg",
+    category: "Entradas",
+    popular: true
+  },
+  {
+    id: 2,
+    name: "Ceviche Mixto",
+    description: "Pescado, pulpo, camarones y conchas negras en leche de tigre especial",
+    price: 32.00,
+    rating: 4.8,
+    prepTime: "18 min",
+    image: "/mixed-seafood-ceviche-with-shrimp-and-octopus.jpg",
+    category: "Entradas",
+    popular: true
+  },
+  {
+    id: 3,
+    name: "Tiradito Nikkei",
+    description: "Cortes finos de pescado con salsa nikkei, palta y ajonjolí",
+    price: 28.00,
+    rating: 4.7,
+    prepTime: "12 min",
+    image: "/tiradito-nikkei-with-thin-fish-slices-and-sesame.jpg",
+    category: "Entradas",
+    popular: false
+  },
+  {
+    id: 4,
+    name: "Arroz con Mariscos",
+    description: "Arroz amarillo con mariscos frescos, culantro y ají amarillo",
+    price: 35.00,
+    rating: 4.6,
+    prepTime: "25 min",
+    image: "/peruvian-seafood-rice-with-cilantro.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 5,
+    name: "Causa Limeña",
+    description: "Papa amarilla con pollo, palta y mayonesa casera",
+    price: 24.00,
+    rating: 4.5,
+    prepTime: "10 min",
+    image: "/causa-limena-with-yellow-potato-and-avocado.jpg",
+    category: "Entradas",
+    popular: false
+  },
+  {
+    id: 6,
+    name: "Leche de Tigre",
+    description: "El jugo concentrado del ceviche con mariscos y cancha",
+    price: 18.00,
+    rating: 4.8,
+    prepTime: "5 min",
+    image: "/leche-de-tigre-with-seafood-and-corn-nuts.jpg",
+    category: "Bebidas",
+    popular: true
+  },
+  {
+    id: 7,
+    name: "Arroz chaufa de mariscos",
+    description: "Arroz frito con mariscos frescos y vegetales",
+    price: 30.00,
+    rating: 4.7,
+    prepTime: "20 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 8,
+    name: "Chaufa de langostinos",
+    description: "Arroz frito con langostinos y vegetales",
+    price: 38.00,
+    rating: 4.8,
+    prepTime: "18 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 9,
+    name: "Chaufa de pescado",
+    description: "Arroz frito con pescado fresco y vegetales",
+    price: 32.00,
+    rating: 4.6,
+    prepTime: "20 min",
+    image: "/placeholder.jpg",
+    category: "Pescados",
+    popular: false
+  },
+  {
+    id: 10,
+    name: "Arroz con conchas negras",
+    description: "Arroz con conchas negras frescas y culantro",
+    price: 40.00,
+    rating: 4.9,
+    prepTime: "25 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: true
+  },
+  {
+    id: 11,
+    name: "Arroz con pulpo",
+    description: "Arroz con pulpo fresco y vegetales",
+    price: 35.00,
+    rating: 4.7,
+    prepTime: "22 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: false
+  },
+  {
+    id: 12,
+    name: "Aeropuerto marino",
+    description: "Combinación de arroz con mariscos variados",
+    price: 42.00,
+    rating: 4.8,
+    prepTime: "30 min",
+    image: "/placeholder.jpg",
+    category: "Criollo",
+    popular: true
+  }
+]
 
-export default function ProductCustomization() {
-  const [selectedSide, setSelectedSide] = useState<string>("")
-  const [selectedExtras, setSelectedExtras] = useState<string[]>([])
+export default function PlatoDetailPage() {
+  const params = useParams()
+  const router = useRouter()
   const [quantity, setQuantity] = useState(1)
-  const [comments, setComments] = useState("")
-  const [showMaxExtrasWarning, setShowMaxExtrasWarning] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
+  const [dish, setDish] = useState<MenuItem | null>(null)
 
-  const basePrice = 20000
-  const product = {
-    name: "Hamburguesa con Queso",
-    description: "Carne de res, queso cheddar, lechuga, tomate y cebolla",
-    price: basePrice,
-    image: "/classic-cheeseburger.png",
+  useEffect(() => {
+    const dishId = parseInt(params.id as string)
+    const foundDish = localMenuItems.find(item => item.id === dishId)
+    setDish(foundDish || null)
+  }, [params.id])
+
+  if (!dish) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Plato no encontrado</h2>
+          <Link href="/home">
+            <Button className="bg-[#0056C6] hover:bg-[#004299] text-white">
+              Volver al menú
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
   }
 
-  const sideOptions: SideOption[] = [
-    { id: "papas-fritas", name: "Papas fritas", price: 0, label: "Gratis" },
-    { id: "papas-doradas", name: "Papas doradas", price: 2000 },
-    { id: "papas-camote", name: "Papas de camote", price: 3000 },
-  ]
-
-  const extraOptions: ExtraOption[] = [
-    { id: "queso-extra", name: "Queso extra", price: 2500 },
-    { id: "tocineta", name: "Tocineta", price: 4000 },
-    { id: "aguacate", name: "Aguacate", price: 3500 },
-  ]
-
-  const handleExtraChange = (extraId: string, checked: boolean) => {
-    if (checked) {
-      if (selectedExtras.length >= 3) {
-        setShowMaxExtrasWarning(true)
-        setTimeout(() => setShowMaxExtrasWarning(false), 3000)
-        return
-      }
-      setSelectedExtras([...selectedExtras, extraId])
-    } else {
-      setSelectedExtras(selectedExtras.filter((id) => id !== extraId))
-    }
-  }
-
-  const calculateTotal = () => {
-    let total = basePrice
-
-    // Add side price
-    const selectedSideOption = sideOptions.find((side) => side.id === selectedSide)
-    if (selectedSideOption) {
-      total += selectedSideOption.price
-    }
-
-    // Add extras prices
-    selectedExtras.forEach((extraId) => {
-      const extra = extraOptions.find((e) => e.id === extraId)
-      if (extra) {
-        total += extra.price
-      }
-    })
-
-    return total * quantity
-  }
-
-  const formatPrice = (price: number) => {
-    return `$${price.toLocaleString()}`
-  }
-
-  const isAddToCartEnabled = selectedSide !== ""
+  const totalPrice = dish.price * quantity
 
   return (
     <div className="min-h-screen bg-[#FAFCFE]">
       {/* Header */}
-      <header className="bg-[#0056C6] sticky top-0 z-50">
-        <div className="max-w-[1110px] mx-auto px-4">
-          <div className="flex items-center justify-center h-16">
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
-                Menú
-              </a>
-              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
-                Nosotros
-              </a>
-              <div className="mx-8">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                  <div className="w-8 h-8 bg-[#0056C6] rounded-full flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
-                Mi Orden
-              </a>
-              <a href="#" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
-                Contáctanos
-              </a>
-            </nav>
-            <div className="md:hidden">
-              <Button variant="ghost" size="sm" className="text-white hover:text-[#5CEFFA]">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header 
+        showFullNavigation={true}
+      />
 
+      {/* Main Content */}
       <div className="max-w-[1110px] mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column - Desktop: 8 cols, Mobile: full width */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Product Summary Card */}
-            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
-              <div className="flex items-start space-x-4">
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-20 h-20 rounded-[30px] object-cover flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <h2 className="text-base font-semibold text-gray-900 mb-1">{product.name}</h2>
-                  <p className="text-sm text-[#8C8CA1] mb-2">{product.description}</p>
-                  <p className="text-base font-semibold text-gray-900">{formatPrice(product.price)}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Mobile: Image first, Desktop: Text first */}
+          <div className="order-2 lg:order-1 space-y-6">
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">{dish.name}</h1>
+              
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="flex items-center space-x-1">
+                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                  <span className="text-lg font-semibold text-gray-800">{dish.rating}</span>
+                </div>
+                <div className="flex items-center space-x-1 text-gray-600">
+                  <Clock className="w-5 h-5" />
+                  <span>{dish.prepTime}</span>
+                </div>
+                <Badge variant="outline" className="text-gray-600">
+                  {dish.category}
+                </Badge>
+              </div>
+
+              <p className="text-base lg:text-lg text-gray-600 leading-relaxed mb-6">
+                {dish.description}
+              </p>
+            </div>
+
+            {/* Price and Quantity */}
+            <Card className="p-6 bg-white border border-gray-200 rounded-xl">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">PRECIO</p>
+                  <p className="text-2xl lg:text-3xl font-bold text-gray-800">S/ {dish.price.toFixed(2)}</p>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-10 h-10 p-0"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    <Minus className="w-4 h-4" />
+                  </Button>
+                  <span className="w-12 text-center text-lg font-semibold">{quantity}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-10 h-10 p-0"
+                    onClick={() => setQuantity(quantity + 1)}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
-            </Card>
 
-            {/* Side Selection Card */}
-            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Selecciona tu acompañamiento</h3>
-                <Badge variant="secondary" className="bg-[#ECF1F4] text-[#8C8CA1] text-xs">
-                  Obligatorio
-                </Badge>
-              </div>
-              <p className="text-sm text-[#8C8CA1] mb-4">Selecciona 1 opción</p>
-
-              <RadioGroup value={selectedSide} onValueChange={setSelectedSide} className="space-y-3">
-                {sideOptions.map((option, index) => (
-                  <div key={option.id}>
-                    <div className="flex items-center justify-between py-3">
-                      <div className="flex items-center space-x-3">
-                        <RadioGroupItem value={option.id} id={option.id} />
-                        <Label htmlFor={option.id} className="text-sm font-medium cursor-pointer">
-                          {option.name}
-                        </Label>
-                      </div>
-                      <div className="text-sm font-medium text-gray-900">
-                        {option.label || (option.price > 0 ? `+${formatPrice(option.price)}` : "Gratis")}
-                      </div>
-                    </div>
-                    {index < sideOptions.length - 1 && <div className="border-b border-[#ECF1F4]"></div>}
-                  </div>
-                ))}
-              </RadioGroup>
-            </Card>
-
-            {/* Extras Card */}
-            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Agrega más sabor a tu orden</h3>
-                <Badge variant="secondary" className="bg-[#ECF1F4] text-[#8C8CA1] text-xs">
-                  Opcional
-                </Badge>
-              </div>
-              <p className="text-sm text-[#8C8CA1] mb-4">Selecciona hasta 3 opciones (opcional)</p>
-
-              {showMaxExtrasWarning && (
-                <div className="mb-4 p-3 bg-[#ECF1F4] rounded-lg">
-                  <p className="text-sm text-[#8C8CA1]">Máximo 3 opciones</p>
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-lg font-semibold text-gray-800">Total:</span>
+                  <span className="text-xl lg:text-2xl font-bold text-[#0056C6]">S/ {totalPrice.toFixed(2)}</span>
                 </div>
-              )}
-
-              <div className="space-y-3">
-                {extraOptions.map((option, index) => (
-                  <div key={option.id}>
-                    <div className="flex items-center justify-between py-3">
-                      <div className="flex items-center space-x-3">
-                        <Checkbox
-                          id={option.id}
-                          checked={selectedExtras.includes(option.id)}
-                          onCheckedChange={(checked) => handleExtraChange(option.id, checked as boolean)}
-                        />
-                        <Label htmlFor={option.id} className="text-sm font-medium cursor-pointer">
-                          {option.name}
-                        </Label>
-                      </div>
-                      <div className="text-sm font-medium text-gray-900">+{formatPrice(option.price)}</div>
-                    </div>
-                    {index < extraOptions.length - 1 && <div className="border-b border-[#ECF1F4]"></div>}
-                  </div>
-                ))}
+                
+                <Button 
+                  className="w-full h-12 bg-[#0056C6] hover:bg-[#004299] text-white text-lg font-semibold rounded-xl"
+                  onClick={() => {
+                    // Navegar a la página de detalle del pedido con el ID del plato
+                    router.push(`/plato/${dish.id}/detalle-pedido`)
+                  }}
+                >
+                  Ordene Ahora
+                </Button>
               </div>
-            </Card>
-
-            {/* Comments Card */}
-            <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Comentarios especiales</h3>
-                <Badge variant="secondary" className="bg-[#ECF1F4] text-[#8C8CA1] text-xs">
-                  Opcional
-                </Badge>
-              </div>
-              <p className="text-sm text-[#8C8CA1] mb-4">Agregamos cualquier modificación especial para tu plato</p>
-
-              <Textarea
-                placeholder="Ej: Sin cebolla, salsa aparte, bien cocido, etc…"
-                value={comments}
-                onChange={(e) => setComments(e.target.value)}
-                maxLength={200}
-                className="min-h-[100px] resize-none border-[#ECF1F4] focus:border-[#5CEFFA] focus:ring-[#5CEFFA]"
-              />
-              <p className="text-xs text-[#8C8CA1] mt-2">{comments.length}/200 caracteres</p>
             </Card>
           </div>
 
-          {/* Right Column - Desktop: 4 cols, Mobile: full width */}
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-24">
-              <Card className="p-6 bg-white border border-[#ECF1F4] rounded-xl shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumen del pedido</h3>
-
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-sm text-gray-600">{product.description}</p>
-                  <p className="text-base font-semibold text-gray-900">{formatPrice(product.price)}</p>
-                </div>
-
-                {/* Quantity Control */}
-                <div className="flex items-center justify-between mb-6">
-                  <span className="text-sm font-medium text-gray-900">Cantidad</span>
-                  <div className="flex items-center space-x-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-8 h-8 p-0 border-[#ECF1F4] bg-transparent"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1}
-                    >
-                      <Minus className="w-4 h-4" />
-                    </Button>
-                    <span className="w-8 text-center text-sm font-medium">{quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-8 h-8 p-0 border-[#ECF1F4] bg-transparent"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Validation Banner */}
-                {!isAddToCartEnabled && (
-                  <div className="mb-4 p-3 bg-[#ECF1F4] rounded-lg">
-                    <p className="text-sm text-[#8C8CA1]">
-                      Faltan selecciones obligatorias: Selecciona tu acompañamiento
-                    </p>
-                  </div>
-                )}
-
-                {/* Add to Cart Button */}
-                <Button
-                  className={`w-full h-12 text-base font-semibold rounded-xl ${
-                    isAddToCartEnabled
-                      ? "bg-[#0056C6] hover:bg-[#004299] text-white"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
-                  }`}
-                  disabled={!isAddToCartEnabled}
-                >
-                  Agregar al carrito – {formatPrice(calculateTotal())}
-                </Button>
-              </Card>
+          {/* Mobile: Text second, Desktop: Image second */}
+          <div className="order-1 lg:order-2 space-y-6">
+            <div className="relative">
+              <img
+                src={dish.image || "/placeholder.svg"}
+                alt={dish.name}
+                className="w-full h-64 lg:h-96 object-cover rounded-2xl bg-gray-300"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.src = "/placeholder.jpg"
+                }}
+              />
+              {dish.popular && (
+                <Badge className="absolute top-4 left-4 bg-yellow-500 text-white text-sm px-3 py-1">
+                  Popular
+                </Badge>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Footer Section */}
-      <footer className="bg-[#0056C6] text-white">
-        <div className="max-w-[1110px] mx-auto px-4 py-12">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-              <div className="w-12 h-12 bg-[#0056C6] rounded-full flex items-center justify-center">
-                <div className="w-6 h-6 bg-white rounded-full"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center justify-center space-x-12 mb-8">
-            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-              Menú
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-              Eventos
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-              Atención al cliente
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-              Métodos de Pago
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-              Políticas y Términos
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-              Contáctanos
-            </a>
-          </nav>
-
-          {/* Mobile Navigation */}
-          <div className="md:hidden space-y-4 mb-8">
-            <div className="border-b border-white/20 pb-4">
-              <button className="flex items-center justify-between w-full text-left">
-                <span className="text-sm font-medium">Menú</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="border-b border-white/20 pb-4">
-              <button className="flex items-center justify-between w-full text-left">
-                <span className="text-sm font-medium">Eventos</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="border-b border-white/20 pb-4">
-              <button className="flex items-center justify-between w-full text-left">
-                <span className="text-sm font-medium">Atención al cliente</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="border-b border-white/20 pb-4">
-              <button className="flex items-center justify-between w-full text-left">
-                <span className="text-sm font-medium">Métodos de Pago</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="border-b border-white/20 pb-4">
-              <button className="flex items-center justify-between w-full text-left">
-                <span className="text-sm font-medium">Políticas y Términos</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="border-b border-white/20 pb-4">
-              <button className="flex items-center justify-between w-full text-left">
-                <span className="text-sm font-medium">Contáctanos</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Tagline */}
-          <div className="text-center mb-8">
-            <p className="text-sm text-white/80">Sabores Auténticos, Momentos Inolvidables.</p>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
-              Ordene Ahora
-            </Button>
-            <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
-              Reserve Ahora
-            </Button>
-          </div>
-
-          {/* Social Media */}
-          <div className="flex justify-center space-x-6 mb-4">
-            <a
-              href="#"
-              className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
-            >
-              <Facebook className="w-5 h-5" />
-            </a>
-            <a
-              href="#"
-              className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
-            >
-              <Instagram className="w-5 h-5" />
-            </a>
-          </div>
-
-          {/* Social Media Text */}
-          <div className="text-center">
-            <p className="text-xs text-white/60">Síguenos En Nuestras Redes Sociales</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }
