@@ -56,18 +56,10 @@ export default function Header({
             </Link>
           </div>
 
-          {/* Desktop - Logo al centro */}
-          <div className="hidden md:flex flex-1 justify-center">
-            <Link href="/home">
-              <img src="/DINE LINE.svg" alt="DINE LINE" className="h-16 w-auto" />
-            </Link>
-          </div>
-
-          {/* Navegación Desktop */}
-          {/* Desktop Header con espaciado balanceado */}
-          <div className="hidden md:flex items-center justify-between w-full">
+          {/* Desktop Header con grid balanceado */}
+          <div className="hidden md:grid grid-cols-3 items-center h-16 w-full">
             {/* Left side - Navigation links */}
-            <div className="flex items-center space-x-8">
+            <div className="flex justify-start space-x-8">
               <Link href="/menu" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Menú
               </Link>
@@ -76,15 +68,15 @@ export default function Header({
               </Link>
             </div>
 
-            {/* Logo en el centro */}
-            <div className="flex items-center">
+            {/* Logo al centro */}
+            <div className="flex justify-center">
               <Link href="/home">
                 <img src="/DINE LINE.svg" alt="DINE LINE" className="h-16 w-auto" />
               </Link>
             </div>
 
             {/* Right side - Navigation links */}
-            <div className="flex items-center space-x-8">
+            <div className="flex justify-end space-x-8">
               <Link href="/order" className="text-sm font-medium text-white hover:text-[#5CEFFA]">
                 Mi Orden
               </Link>

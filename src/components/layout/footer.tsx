@@ -9,29 +9,23 @@ export default function Footer() {
       <div className="max-w-[1110px] mx-auto px-4 py-12">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <img 
-            src="/dineline2.svg" 
-            alt="DINE LINE" 
-            className="h-20 w-auto"
+          <img
+            src="/dineline2.svg"
+            alt="DINE LINE"
+            className="h-20 w-auto "
           />
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center justify-center space-x-12 mb-8">
           <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
+            Nosotros
+          </a>
+          <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
             Menú
           </a>
           <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-            Eventos
-          </a>
-          <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-            Atención al cliente
-          </a>
-          <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-            Métodos de Pago
-          </a>
-          <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
-            Políticas y Términos
+            Mi Orden
           </a>
           <a href="#" className="text-sm font-medium hover:text-[#5CEFFA]">
             Contáctanos
@@ -41,39 +35,23 @@ export default function Footer() {
         {/* Mobile Navigation */}
         <div className="md:hidden space-y-4 mb-8">
           <div className="border-b border-white/20 pb-4">
-            <button className="flex items-center justify-between w-full text-left">
-              <span className="text-sm font-medium">Menú</span>
-              <ChevronDown className="w-4 h-4" />
+            <button className="flex justify-center w-full">
+              <span className="text-sm font-bold">Nosotros</span>
             </button>
           </div>
           <div className="border-b border-white/20 pb-4">
-            <button className="flex items-center justify-between w-full text-left">
-              <span className="text-sm font-medium">Eventos</span>
-              <ChevronDown className="w-4 h-4" />
+            <button className="flex justify-center w-full">
+              <span className="text-sm font-bold">Menú</span>
             </button>
           </div>
           <div className="border-b border-white/20 pb-4">
-            <button className="flex items-center justify-between w-full text-left">
-              <span className="text-sm font-medium">Atención al cliente</span>
-              <ChevronDown className="w-4 h-4" />
+            <button className="flex justify-center w-full">
+              <span className="text-sm font-bold">Mi Orden</span>
             </button>
           </div>
           <div className="border-b border-white/20 pb-4">
-            <button className="flex items-center justify-between w-full text-left">
-              <span className="text-sm font-medium">Métodos de Pago</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="border-b border-white/20 pb-4">
-            <button className="flex items-center justify-between w-full text-left">
-              <span className="text-sm font-medium">Políticas y Términos</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="border-b border-white/20 pb-4">
-            <button className="flex items-center justify-between w-full text-left">
-              <span className="text-sm font-medium">Contáctanos</span>
-              <ChevronDown className="w-4 h-4" />
+            <button className="flex justify-center w-full">
+              <span className="text-sm font-bold">Contáctanos</span>
             </button>
           </div>
         </div>
@@ -84,14 +62,14 @@ export default function Footer() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+        {/*<div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
             Ordene Ahora
           </Button>
           <Button className="bg-[#5CEFFA] hover:bg-[#4DD8E8] text-black font-semibold px-8 py-3 rounded-xl">
             Reserve Ahora
           </Button>
-        </div>
+        </div>*/}
 
         {/* Social Media */}
         <div className="flex justify-center space-x-6 mb-4">

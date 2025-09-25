@@ -435,7 +435,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <Header 
+      <Header
         showFullNavigation={true}
       />
 
@@ -466,8 +466,8 @@ export default function HomePage() {
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
                 className={`rounded-full px-4 py-2 ${selectedCategory === category
-                    ? "bg-[#0056C6] text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  ? "bg-[#5CEFFA] text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
               >
                 {category}
@@ -518,16 +518,19 @@ export default function HomePage() {
                 onClick={() => toggleCategory(category)}
               >
                 <h2 className="text-xl font-bold text-gray-800 flex-1 text-center">{category}</h2>
+
                 {expandedCategories[category] ? (
                   <ChevronUp className="w-5 h-5 text-gray-600" />
                 ) : (
                   <ChevronDown className="w-5 h-5 text-gray-600" />
                 )}
               </div>
+              {/* Mostrar <hr> solo si está expandido */}
+              {expandedCategories[category] && <hr className="border-blue-700" />}
 
               {/* Dishes Grid */}
               {expandedCategories[category] && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 py-5">
                   {dishes.map((dish) => (
                     <Link key={dish.id} href={`/plato/${dish.id}`}>
                       <article className="text-center cursor-pointer hover:scale-105 transition-transform duration-200">
