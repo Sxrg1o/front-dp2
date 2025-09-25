@@ -6,31 +6,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
     "/home/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/home/page.js"
-    ],
-    "/api/auth/test-selenium/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/auth/test-selenium/route.js"
-    ],
-    "/api/menu/pizzas/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/menu/pizzas/route.js"
-    ],
-    "/(cliente)/plato/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(cliente)/plato/[id]/page.css",
-      "static/chunks/app/(cliente)/plato/[id]/page.js"
     ]
   }
 }
