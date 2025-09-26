@@ -1,4 +1,5 @@
 node_modules
 next-env.d.ts
 next.config.js
-portcss.config.js
+postcss.config.js
+tailwind.config.js
