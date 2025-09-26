@@ -25,7 +25,7 @@ export async function GET() {
     
     return NextResponse.json({ 
       success: true, 
-      data: data,
+      data,
       count: Array.isArray(data) ? data.length : 0,
       timestamp: new Date().toISOString()
     })

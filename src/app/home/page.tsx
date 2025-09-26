@@ -1,11 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import {
   Shrimp,
   User,
@@ -29,11 +23,18 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import Link from 'next/link'
-import Header from "@/components/layout/header"
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
 import Footer from "@/components/layout/footer"
+import Header from "@/components/layout/header"
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 
 // Tipo para la API
@@ -284,12 +285,12 @@ export default function HomePage() {
 
       return {
         id: index + 1,
-        name: name,
-        description: description,
+        name,
+        description,
         price: parseFloat(price.replace(/[^\d.-]/g, '')) || 0,
         rating: 4.5 + Math.random() * 0.5, // Rating aleatorio entre 4.5-5.0
         prepTime: "15-20 min",
-        image: image, // Usar la imagen de la API
+        image, // Usar la imagen de la API
         category: localMenuItems[index % localMenuItems.length]?.category || "Entradas",
         popular: Math.random() > 0.7 // 30% chance de ser popular
       }

@@ -1,18 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
 import { Minus, Plus, Facebook, Instagram, ChevronDown, ArrowLeft } from "lucide-react"
-import Header from "@/components/layout/header"
-import Footer from "@/components/layout/footer"
 import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+
+import Footer from "@/components/layout/footer"
+import Header from "@/components/layout/header"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
+
 
 interface SideOption {
   id: string

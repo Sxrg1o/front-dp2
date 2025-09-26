@@ -23,7 +23,7 @@ export async function GET() {
     
     return NextResponse.json({ 
       success: true, 
-      data: data,
+      data,
       timestamp: new Date().toISOString()
     })
   } catch (error) {
